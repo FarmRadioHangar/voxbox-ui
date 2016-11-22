@@ -1,0 +1,98 @@
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-badge/paper-badge.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="poly-tab.html">
+
+<dom-module id="poly-header">
+  <template>
+
+    <style>
+
+      :host {}
+
+      app-toolbar {
+        background-color: rgb(0, 188, 212); 
+        color: white;
+        font-weight: lighter;
+        --app-toolbar-font-size: 24px;
+      }
+
+      paper-tabs {
+        background-color: #1a88ae;
+        color: #fff;
+        width: 100vw;
+        --paper-tabs-selection-bar-color: var(--paper-pink-a200); 
+      }
+
+      paper-tab {
+        --paper-tab-ink: rgba(255, 255, 255, 0.7);
+      }
+
+      paper-badge {
+        --paper-badge-margin-left: -66px;
+        --paper-badge-margin-bottom: 19px;
+      }
+
+    </style>
+
+    <app-toolbar>
+      <div main-title>VoxBox</div>
+
+      <template is="dom-if" if="[[!online]]">
+        <iron-icon id="offline-indicator" icon="warning"></iron-icon>
+      </template>
+
+      <paper-icon-button id="settings" on-tap="handleTap" icon="settings"></paper-icon-button>
+      <paper-tooltip for="offline-indicator" offset="0">
+        No connection
+      </paper-tooltip>
+    </app-toolbar>
+
+    <paper-tabs selected="{{selected}}">
+      <paper-tab>
+        <poly-tab label="MIXER" icon="av:volume-up"></poly-tab>
+      </paper-tab>
+      <paper-tab>
+        <poly-tab label="MESSAGES" icon="communication:chat"></poly-tab>
+        <paper-badge for="number" label="4"></paper-badge>
+      </paper-tab>
+      <paper-tab>
+        <poly-tab label="CALL HISTORY" icon="history"></poly-tab>
+      </paper-tab>
+      <paper-tab>
+        <poly-tab label="CONTACTS" icon="communication:import-contacts"></poly-tab>
+      </paper-tab>
+    </paper-tabs>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'poly-header',
+
+      handleTap(event) {
+        if ('settings' === event.target.id) {
+          this.fire('tap-settings');
+        }
+      },
+      
+      properties: {
+        selected: {
+          type: Number,
+          value: 0,
+          notify: true
+        },
+        online: {
+          type: Boolean,
+          value: true
+        }
+      },
+
+    });
+  </script>
+</dom-module>

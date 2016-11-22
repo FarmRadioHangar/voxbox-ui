@@ -1,0 +1,22 @@
+{
+  "name": "voxbox-polymer-frontend",
+  "authors": [
+    "Farm Radio International"
+  ],
+  "private": true,
+  "dependencies": {
+    "polymer": "Polymer/polymer#^1.7.0",
+    "iron-elements": "PolymerElements/iron-elements#^1.0.10",
+    "neon-elements": "PolymerElements/neon-elements#^1.0.0",
+    "paper-elements": "PolymerElements/paper-elements#^1.0.7",
+    "app-layout": "PolymerElements/app-layout#^0.10.6",
+    "polymer-redux": "^0.3.0",
+    "app-storage": "PolymerElements/app-storage#^0.9.7",
+    "redux": "https://cdnjs.cloudflare.com/ajax/libs/redux/3.0.4/redux.js",
+    "vaadin-grid": "^1.2.0",
+    "moment": "^2.16.0"
+  },
+  "devDependencies": {
+    "web-component-tester": "^5.0.0"
+  }
+}
