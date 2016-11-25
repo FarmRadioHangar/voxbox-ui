@@ -1,4 +1,7 @@
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
@@ -24,6 +27,12 @@
         padding: 12px 12px 12px 0;
       }
 
+      paper-checkbox {
+        padding: 21px 10px;
+        --paper-checkbox-checked-color: rgb(0, 188, 212); 
+        --paper-checkbox-checked-ink-color: rgb(0, 188, 212); 
+      }
+
       .item {
         @apply(--layout-vertical);
       }
@@ -31,6 +40,16 @@
       .meta {
         @apply(--layout-horizontal);
         align-items: top;
+      }
+
+      .date {
+        font-size: 12px;
+        margin-bottom: 2px;
+        text-transform: uppercase;
+      }
+
+      .star {
+        color: var(--paper-pink-a200); 
       }
 
       .content {
@@ -49,20 +68,27 @@
       <div class="item">
 
         <div class="meta">
-          <paper-checkbox on-tap="toggleSelected" checked="[[selected]]">
-          </paper-checkbox>
+          <paper-checkbox on-tap="toggleSelected" checked="[[selected]]"></paper-checkbox>
           <paper-item-body>
             <div secondary class="date">[[formatDate(item.timestamp)]]</div>
             <div>[[item.endpoint]]</div>
           </paper-item-body>
         </div>
 
-        <div class="content">
-          content
-        </div>
+        <paper-item-body class="content">
+          <div secondary style="white-space: normal;">
+            [[item.content]]
+          </div>
+        </paper-item-body>
 
         <div class="controls">
-          controls
+          <paper-icon-button 
+            icon   = "star"
+            class  = "star">
+          </paper-icon-button>
+          <paper-icon-button 
+            icon   = "more-vert">
+          </paper-icon-button>
         </div>
 
       </div>
@@ -93,4 +119,3 @@
     });
   </script>
 </dom-module>
-    
