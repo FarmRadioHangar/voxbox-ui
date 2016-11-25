@@ -11,7 +11,7 @@ global.config = {
     rootDirectory: 'build',
     bundledDirectory: 'bundled',
     unbundledDirectory: 'unbundled',
-    bundleType: 'bundled' // Accepts either 'bundled', 'unbundled', or 'both'
+    bundleType: 'both' // Accepts either 'bundled', 'unbundled', or 'both'
   },
   // Path to service worker, relative to the build root directory
   serviceWorkerPath: 'service-worker.js',
