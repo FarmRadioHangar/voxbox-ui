@@ -49,8 +49,8 @@
         this.fire('message', response);
       }
 
-      send(json) {
-        this.socket.send(JSON.stringify(json));
+      send(data) {
+        this.socket.send(JSON.stringify(data));
       }
 
     }
