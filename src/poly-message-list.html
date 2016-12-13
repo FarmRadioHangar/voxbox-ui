@@ -18,6 +18,8 @@
 
       iron-list {
         flex: 1 1 auto;
+        padding-top: 32px;
+        padding-bottom: 32px;
       }
 
       .list-item {
@@ -28,7 +30,7 @@
     </style>
 
     <iron-list
-      id             = "message-list"
+      id             = "messagelist"
       items          = "[[items]]"
       selected-items = "{{selectedItems}}"
       selection-enabled 
@@ -72,7 +74,11 @@
       },
 
       handleToggleSelected: function(event) {
-        this.$.messageList.toggleSelectionForItem(event.model.item);
+        this.$.messagelist.toggleSelectionForItem(event.model.item);
+      },
+
+      handleThreshold: function(event) {
+        console.log(event);
       },
 
       behaviors: [
