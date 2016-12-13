@@ -1,6 +1,8 @@
 <link rel="import" href="../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="poly-channel.html">
 
 <dom-module id="poly-channel-list">
   <template>
@@ -21,7 +23,7 @@
       <paper-material>
 
         <template is="dom-repeat" items="{{channels}}">
-          <div>{{item.id}}</div>
+          <poly-channel channel="{{item}}"></poly-channel>
         </template>
 
       </paper-material>
