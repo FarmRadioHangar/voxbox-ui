@@ -1,3 +1,6 @@
+function mixer() {
+}
+
 const initialState = {
   inbox: []
 };
@@ -7,8 +10,7 @@ function messages(state = initialState, action) {
   switch (action.type) {
     case 'INBOX_MESSAGES':
       const { ids, messages } = action.data
-      const inbox = ids.map(id => messages[id]);
-      console.log(inbox);
+      const inbox = ids.map(id => messages[id]).filter(msg => 'sms_in' === msg.type);
       return { inbox };
     default:
       return state;
