@@ -4,6 +4,7 @@
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-storage/app-network-status-behavior.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="poly-channel-list.html">
@@ -22,6 +23,12 @@
 
       app-header {
         height: 113px;
+      }
+
+      paper-fab {
+        position: fixed;
+        right: 30px;
+        bottom: 30px;
       }
 
     </style>
@@ -49,10 +56,16 @@
         </app-header fixed>
 
         <iron-pages selected=[[selected]]>
-          <poly-channel-list></poly-channel-list>
-          <poly-message-list></poly-message-list>
+          <poly-channel-list>
+            <paper-fab icon="communication:phone"></paper-fab>
+          </poly-channel-list>
+          <poly-message-list>
+            <paper-fab icon="communication:message"></paper-fab>
+          </poly-message-list>
           <poly-logs></poly-logs>
-          <poly-contacts></poly-contacts>
+          <poly-contacts>
+            <paper-fab icon="create"></paper-fab>
+          </poly-contacts>
         </iron-pages>
 
       </app-header-layout>
