@@ -81,7 +81,7 @@
           data: {
             filter: [], 
             after_id: null,
-            count: 100
+            count: null
           }
         });
       },
@@ -90,19 +90,24 @@
         console.log('handleConnectionClosed');
       },
 
-      handleMessage(event, response) {
-        switch (response.event) {
+      handleMessage(event, payload) {
+        console.dir(payload);
+        switch (payload.event) {
           case 'initialize':
-            console.log('initialize');
+            this.dispatch({
+              type: 'APP_INITIALIZE',
+              data: payload.data.mixer
+            });
+
             break;
           case 'inboxMessages':
             this.dispatch({
               type: 'INBOX_MESSAGES',
-              data: response.data
+              data: payload.data
             });
             break;
           default:
-            console.warn('Unhandled message type: ' + response.event);
+            console.warn('Unhandled message type: ' + payload.event);
         }
       },
 
