@@ -16,7 +16,7 @@
       }
 
       paper-material {
-        height: 210px;
+        height: 220px;
         margin: 10px;
         background: white;
         padding: 0 12px;
@@ -43,9 +43,11 @@
       }
 
       .date {
-        font-size: 12px;
-        margin-bottom: 2px;
         text-transform: uppercase;
+      }
+
+      .date > span {
+        font-size: 13px;
       }
 
       .star {
@@ -70,7 +72,7 @@
         <div class="meta">
           <paper-checkbox on-tap="toggleSelected" checked="[[selected]]"></paper-checkbox>
           <paper-item-body>
-            <div secondary class="date">[[formatDate(item.timestamp)]]</div>
+            <div secondary class="date"><span>[[formatDate(item.timestamp)]]</span></div>
             <div>[[item.endpoint]]</div>
           </paper-item-body>
         </div>
@@ -89,8 +91,9 @@
           <paper-icon-button 
             icon   = "more-vert">
           </paper-icon-button>
-        </div>
 
+        </div>
+        
       </div>
     </paper-material>
 
