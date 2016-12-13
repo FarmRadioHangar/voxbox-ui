@@ -1,3 +1,5 @@
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
 <dom-module id="poly-channel">
@@ -5,12 +7,58 @@
 
     <style>
 
-      :host {}
+      :host {
+      }
+
+      .channel {
+        border-bottom: 1px solid rgb(224, 224, 224);
+        min-height: 96px;
+      }
+
+      .container {
+        display: flex; 
+        flexDirection: row;
+      }
+
+      .container > .avatar {
+        color: rgb(255, 64, 129); 
+        display: inline-flex; 
+        align-items: center; 
+        justify-content: center; 
+        font-size: 20px; 
+        margin-top: 13px; 
+      }
+
+      .container > .id {
+        flex: 2;
+        padding-top: 12px;
+        padding-left: 16px;
+      }
+
+      .container > .label {
+        flex: 2; 
+        padding-top: 12px; 
+        text-align: right;
+      }
+
+      .container > .id, .container > .label {
+        color: rgba(0, 0, 0, 0.5);
+        font-size: 16px;
+        font-weight: 400;
+      }
 
     </style>
 
-    <div>
-      This is channel {{channel.id}}
+    <div class="channel">
+
+      <div class="container">
+        <div class="avatar">
+          <iron-icon icon="communication:phone" item-icon></iron-icon>
+        </div>
+        <div class="id">{{channel.id}}</div>
+        <div class="label">{{channel.label}}</div>
+      </div>
+
     </div>
 
   </template>
