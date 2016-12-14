@@ -7,10 +7,13 @@
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="poly-add-contact-dialog.html">
 <link rel="import" href="poly-channel-list.html">
 <link rel="import" href="poly-contacts.html">
 <link rel="import" href="poly-header.html">
 <link rel="import" href="poly-logs.html">
+<link rel="import" href="poly-make-call-dialog.html">
+<link rel="import" href="poly-message-dialog.html">
 <link rel="import" href="poly-message-handler.html">
 <link rel="import" href="poly-message-list.html">
 
@@ -57,20 +60,24 @@
 
         <iron-pages selected=[[selected]]>
           <poly-channel-list>
-            <paper-fab icon="communication:phone"></paper-fab>
+            <paper-fab on-tap="openMakeCallDialog" icon="communication:phone"></paper-fab>
           </poly-channel-list>
           <poly-message-list>
-            <paper-fab icon="communication:message"></paper-fab>
+            <paper-fab on-tap="openNewMessageDialog" icon="communication:message"></paper-fab>
           </poly-message-list>
           <poly-logs></poly-logs>
           <poly-contacts>
-            <paper-fab icon="create"></paper-fab>
+            <paper-fab on-tap="openAddContactDialog" icon="create"></paper-fab>
           </poly-contacts>
         </iron-pages>
 
       </app-header-layout>
 
     </app-drawer-layout>
+
+    <poly-make-call-dialog id="makecalldialog"></poly-make-call-dialog>
+    <poly-message-dialog id="newmessagedialog"></poly-message-dialog>
+    <poly-add-contact-dialog id="addcontactdialog"></poly-add-contact-dialog>
 
   </template>
 
@@ -126,6 +133,18 @@
 
       handleError() {
         console.log('handleError');
+      },
+
+      openMakeCallDialog() {
+        this.$.makecalldialog.open();
+      },
+
+      openNewMessageDialog() {
+        this.$.newmessagedialog.open();
+      },
+
+      openAddContactDialog() {
+        this.$.addcontactdialog.open();
       },
 
       behaviors: [
