@@ -1,5 +1,8 @@
 <link rel="import" href="../bower_components/neon-animation/neon-animations.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
 <dom-module id="poly-make-call-dialog">
@@ -9,6 +12,10 @@
     <style>
 
       :host {}
+
+      paper-dropdown-menu {
+        width: 100%;
+      }
 
     </style>
 
@@ -21,6 +28,14 @@
           <paper-radio-button name="b">Tigo</paper-radio-button>
           <paper-radio-button name="c">Auto-select</paper-radio-button>
         </paper-radio-group>
+      </div>
+      <div>
+        <paper-dropdown-menu horizontal-align="left" label="Call mode">
+          <paper-listbox class="dropdown-content">
+            <paper-item>On air (master)</paper-item>
+            <paper-item>Private</paper-item>
+          </paper-listbox>
+        </paper-dropdown-menu>
       </div>
       <paper-input label="Number"></paper-input>
       <div class="buttons">
