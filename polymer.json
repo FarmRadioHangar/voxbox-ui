@@ -1,0 +1,17 @@
+{
+  "entrypoint": "index.html",
+  "shell": "src/poly-app/poly-app.html",
+  "fragments": [
+  ],
+  "sourceGlobs": [
+   "src/**/*",
+   "images/**/*",
+   "bower.json"
+  ],
+  "includeDependencies": [
+    "manifest.json",
+    "bower_components/webcomponentsjs/webcomponents-lite.min.js",
+    "bower_components/redux/index.js",
+    "bower_components/moment/moment.js"
+  ]
+}

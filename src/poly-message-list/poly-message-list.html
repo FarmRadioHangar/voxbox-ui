@@ -1,0 +1,142 @@
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="poly-message-grid-item.html">
+<!-- <link rel="import" href="poly-message-list-item.html"> -->
+
+<dom-module id="poly-message-list">
+  <template>
+
+    <style>
+
+      :host {
+        display: block;
+        height: calc(100vh - 115px);
+        width: 100vw;
+        display: flex;
+        flex-direction: column;
+      }
+
+      iron-list {
+        flex: 1 1 auto;
+        padding-top: 32px;
+        padding-bottom: 32px;
+      }
+
+      .grid-item {
+        height: 230px;
+        width: 290px;
+      }
+
+      .list-item {
+        height: 170px;
+        width: 290px;
+      }
+
+    </style>
+
+    <paper-dialog with-backdrop id="actions">
+      <div class="buttons" style="padding-left: 8px;">
+        <paper-button>Delete</paper-button>
+        <paper-button>Reply</paper-button>
+        <paper-button>Call number</paper-button>
+        <!--
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        -->
+      </div>
+    </paper-dialog>
+
+    <iron-list
+      id             = "messagelist"
+      items          = "[[items]]"
+      selected-items = "{{selectedItems}}"
+      selection-enabled 
+      multi-selection
+      grid>
+
+      <template>
+
+        <div class="grid-item">
+          <poly-message-grid-item 
+            item               = "[[item]]"
+            index              = "[[index]]"
+            selected           = "[[selected]]"
+            on-actions-tap     = "showActions"
+            on-toggle-selected = "handleToggleSelected">
+          </poly-message-grid-item>
+        </div>
+
+      </template>
+
+    </iron-list>
+
+    <!--
+
+    <iron-list
+      id             = "messagelist"
+      items          = "[[items]]"
+      selected-items = "{{selectedItems}}"
+      selection-enabled 
+      multi-selection>
+
+      <template>
+
+        <div class="list-item">
+          <poly-message-list-item 
+            item               = "[[item]]"
+            index              = "[[index]]"
+            selected           = "[[selected]]"
+            on-toggle-selected = "handleToggleSelected">
+          </poly-message-list-item>
+        </div>
+
+      </template>
+
+    </iron-list>
+
+    -->
+
+    <content></content>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'poly-message-list',
+
+      properties: {
+        items: {
+          type: Array,
+          statePath: 'messages.inbox'
+        },
+        loading: {
+          type: Boolean,
+          value: false
+        },
+        selectedItems: {
+          type: Object
+        },
+      },
+
+      handleToggleSelected: function(event) {
+        this.$.messagelist.toggleSelectionForItem(event.model.item);
+      },
+
+      handleThreshold: function(event) {
+        console.log(event);
+      },
+
+      showActions: function(event) {
+        this.$.actions.open();
+      },
+
+      behaviors: [
+        PolymerRedux(store),
+      ]
+
+    });
+  </script>
+</dom-module>
