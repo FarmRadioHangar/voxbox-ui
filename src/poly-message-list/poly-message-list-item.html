@@ -6,21 +6,59 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="poly-message-item-styles.html">
 
-<dom-module id="poly-message-grid-item">
+<dom-module id="poly-message-list-item">
   <template>
 
     <style include="iron-flex"></style>
     <style include="message-item-styles"></style>
 
+    <style>
+
+      paper-material {
+        width: 800px;
+        height: 160px;
+        margin: 10px auto;
+      }
+
+      .bar {
+        @apply(--layout-horizontal);
+      }
+
+      .controls {
+        align-self: flex-start;
+        margin-top: 8px;
+      }
+
+      .meta {
+        flex: 10;
+      }
+
+    </style>
+
     <paper-material>
       <div class="item">
 
-        <div class="meta">
-          <paper-checkbox on-tap="toggleSelected" checked="[[selected]]"></paper-checkbox>
-          <paper-item-body>
-            <div secondary class="date"><span>[[formatDate(item.timestamp)]]</span></div>
-            <div>[[item.endpoint]]</div>
-          </paper-item-body>
+        <div class="bar">
+
+          <div class="meta">
+            <paper-checkbox on-tap="toggleSelected" checked="[[selected]]"></paper-checkbox>
+            <paper-item-body>
+              <div secondary class="date"><span>[[formatDate(item.timestamp)]]</span></div>
+              <div>[[item.endpoint]]</div>
+            </paper-item-body>
+          </div>
+
+          <div class="controls">
+            <paper-icon-button 
+              icon   = "star"
+              class  = "star">
+            </paper-icon-button>
+            <paper-icon-button 
+              on-tap = "showMessageActions"
+              icon   = "more-vert">
+            </paper-icon-button>
+          </div>
+
         </div>
 
         <paper-item-body class="content">
@@ -28,17 +66,6 @@
             [[item.content]]
           </div>
         </paper-item-body>
-
-        <div class="controls">
-          <paper-icon-button 
-            icon   = "star"
-            class  = "star">
-          </paper-icon-button>
-          <paper-icon-button 
-            on-tap = "showMessageActions"
-            icon   = "more-vert">
-          </paper-icon-button>
-        </div>
         
       </div>
     </paper-material>
@@ -48,7 +75,7 @@
   <script>
     Polymer({
 
-      is: 'poly-message-grid-item',
+      is: 'poly-message-list-item',
 
       formatDate: function(stamp) {
         return moment(Number(stamp)).format("ddd, MMM Do YYYY, h:mm:ss a"); 
