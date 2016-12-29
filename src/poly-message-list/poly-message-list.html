@@ -1,4 +1,5 @@
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
@@ -15,6 +16,14 @@
         display: block;
         height: calc(100vh - 115px);
         width: 100vw;
+        display: flex;
+        flex-direction: column;
+      }
+
+      iron-pages {
+        display: block;
+        height: 100%;
+        width: 100%;
         display: flex;
         flex-direction: column;
       }
@@ -42,57 +51,57 @@
         <paper-button>Delete</paper-button>
         <paper-button>Reply</paper-button>
         <paper-button>Call number</paper-button>
-        <!--
-        <paper-button dialog-dismiss>Cancel</paper-button>
-        -->
       </div>
     </paper-dialog>
 
-    <iron-list
-      id             = "messagelist"
-      items          = "[[items]]"
-      selected-items = "{{selectedItems}}"
-      selection-enabled 
-      multi-selection
-      grid>
+    <paper-checkbox checked="{{gridMode}}" on-change="refreshList"></paper-checkbox>
 
-      <template>
+    <iron-pages id="pages" selected="[[_selectedPage(gridMode)]]">
 
-        <div class="grid-item">
-          <poly-message-grid-item 
-            item               = "[[item]]"
-            index              = "[[index]]"
-            selected           = "[[selected]]"
-            on-actions-tap     = "showActions"
-            on-toggle-selected = "handleToggleSelected">
-          </poly-message-grid-item>
-        </div>
+      <iron-list
+        id             = "message-grid"
+        items          = "[[items]]"
+        selected-items = "{{gridSelectedItems}}"
+        selection-enabled 
+        multi-selection
+        grid>
 
-      </template>
+        <template>
+          <div class="grid-item">
+            <poly-message-grid-item 
+              item               = "[[item]]"
+              index              = "[[index]]"
+              selected           = "[[selected]]"
+              on-actions-tap     = "showActions"
+              on-toggle-selected = "handleToggleSelected">
+            </poly-message-grid-item>
+          </div>
+        </template>
 
-    </iron-list>
+      </iron-list>
 
-    <iron-list
-      id             = "messagelist"
-      items          = "[[items]]"
-      selected-items = "{{selectedItems}}"
-      selection-enabled 
-      multi-selection>
+      <iron-list
+        id             = "message-list"
+        items          = "[[items]]"
+        selected-items = "{{listSelectedItems}}"
+        selection-enabled 
+        multi-selection>
 
-      <template>
+        <template>
+          <div class="list-item">
+            <poly-message-list-item 
+              item               = "[[item]]"
+              index              = "[[index]]"
+              selected           = "[[selected]]"
+              on-actions-tap     = "showActions"
+              on-toggle-selected = "handleToggleSelected">
+            </poly-message-list-item>
+          </div>
+        </template>
 
-        <div class="list-item">
-          <poly-message-list-item 
-            item               = "[[item]]"
-            index              = "[[index]]"
-            selected           = "[[selected]]"
-            on-toggle-selected = "handleToggleSelected">
-          </poly-message-list-item>
-        </div>
+      </iron-list>
 
-      </template>
-
-    </iron-list>
+    </iron-pages>
 
     <content></content>
 
@@ -103,29 +112,45 @@
 
       is: 'poly-message-list',
 
+      ready: function() {
+      },
+
       properties: {
         items: {
           type: Array,
-          statePath: 'messages.inbox'
+          statePath: 'messages.inbox',
         },
         loading: {
           type: Boolean,
-          value: false
+          value: false,
         },
-        selectedItems: {
-          type: Object
+        listSelectedItems: {
+          type: Object,
         },
+        gridSelectedItems: {
+          type: Object,
+        },
+        gridMode: {
+          type: Boolean,
+          value: true,
+        },
+      },
+
+      refreshList: function() {
       },
 
       handleToggleSelected: function(event) {
-        this.$.messagelist.toggleSelectionForItem(event.model.item);
+        this.$[this.gridMode ? 'message-grid' : 'message-list'].toggleSelectionForItem(event.model.item);
       },
 
-      handleThreshold: function(event) {
-        console.log(event);
+      _selectedPage: function(gridMode) {
+        this.$[this.gridMode ? 'message-grid' : 'message-list'].clearSelection();
+        return gridMode ? 0 : 1;
       },
 
       showActions: function(event) {
+        var body = document.querySelector('body');
+        Polymer.dom(body).appendChild(this.$.actions);
         this.$.actions.open();
       },
 
