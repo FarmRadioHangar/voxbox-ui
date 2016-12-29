@@ -34,7 +34,7 @@
     </style>
 
     <poly-message-handler 
-      id         = "messagehandler"
+      id         = "message-handler"
       on-open    = "handleConnectionOpened"
       on-close   = "handleConnectionClosed"
       on-message = "handleMessage"
@@ -72,9 +72,9 @@
 
     </app-drawer-layout>
 
-    <poly-make-call-dialog id="makecalldialog"></poly-make-call-dialog>
-    <poly-message-dialog id="newmessagedialog"></poly-message-dialog>
-    <poly-add-contact-dialog id="addcontactdialog"></poly-add-contact-dialog>
+    <poly-make-call-dialog id="make-call-dialog"></poly-make-call-dialog>
+    <poly-message-dialog id="new-message-dialog"></poly-message-dialog>
+    <poly-add-contact-dialog id="add-contact-dialog"></poly-add-contact-dialog>
 
   </template>
 
@@ -84,13 +84,12 @@
       is: 'poly-app',
 
       handleToggleSettings: function() {
-        console.log('handleToggleSettings()');
         this.$.drawer.toggle();
       },
 
       handleConnectionOpened: function() {
         console.log('handleConnectionOpened()');
-        this.$.messagehandler.send({
+        this.$['message-handler'].send({
           event: 'inboxFetch',
           data: {
             filter: [], 
@@ -130,15 +129,15 @@
       },
 
       openMakeCallDialog: function() {
-        this.$.makecalldialog.open();
+        this.$['make-call-dialog'].open();
       },
 
       openNewMessageDialog: function() {
-        this.$.newmessagedialog.open();
+        this.$['new-message-dialog'].open();
       },
 
       openAddContactDialog: function() {
-        this.$.addcontactdialog.open();
+        this.$['add-contact-dialog'].open();
       },
 
       properties: {},
