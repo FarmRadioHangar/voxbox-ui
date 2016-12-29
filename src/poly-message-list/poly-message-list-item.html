@@ -5,6 +5,7 @@
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="poly-message-item-styles.html">
+<link rel="import" href="poly-message-behavior.html">
 
 <dom-module id="poly-message-list-item">
   <template>
@@ -77,24 +78,7 @@
 
       is: 'poly-message-list-item',
 
-      formatDate: function(stamp) {
-        return moment(Number(stamp)).format("ddd, MMM Do YYYY, h:mm:ss a"); 
-      },
-
-      toggleSelected: function(event) {
-        this.fire('toggle-selected');
-      },
-
-      showMessageActions: function() {
-        this.fire('actions-tap');
-      },
-
-      properties: {
-        selected: {
-          type: Boolean,
-          value: false
-        },
-      },
+      behaviors: [MessageBehavior],
 
     });
   </script>
