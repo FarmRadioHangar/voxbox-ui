@@ -26,6 +26,10 @@ function messages(state, action) {
     return initialMessagesState;
   }
   switch (action.type) {
+    case 'INBOX_RESET':
+      return {
+        inbox: []
+      };
     case 'INBOX_MESSAGES':
       var ids = action.data.ids;
       var messages = action.data.messages;
