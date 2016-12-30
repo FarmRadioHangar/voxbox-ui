@@ -1,9 +1,9 @@
 <link rel="import" href="../../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="poly-message-actions.html"> 
 <link rel="import" href="poly-message-grid-item.html">
 <link rel="import" href="poly-message-list-item.html"> 
 
@@ -46,13 +46,7 @@
 
     </style>
 
-    <paper-dialog with-backdrop id="actions">
-      <div class="buttons" style="padding-left: 8px;">
-        <paper-button>Delete</paper-button>
-        <paper-button>Reply</paper-button>
-        <paper-button>Call number</paper-button>
-      </div>
-    </paper-dialog>
+    <poly-message-actions id="actions"></poly-message-actions>
 
     <paper-checkbox checked="{{gridMode}}" on-change="refreshList"></paper-checkbox>
 
