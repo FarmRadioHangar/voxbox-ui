@@ -6,6 +6,7 @@
 <link rel="import" href="poly-message-actions.html"> 
 <link rel="import" href="poly-message-grid-item.html">
 <link rel="import" href="poly-message-list-item.html"> 
+<link rel="import" href="poly-message-list-toolbar.html"> 
 
 <dom-module id="poly-message-list">
   <template>
@@ -48,7 +49,12 @@
 
     <poly-message-actions id="actions"></poly-message-actions>
 
-    <paper-checkbox checked="{{gridMode}}" on-change="refreshList"></paper-checkbox>
+    <poly-message-list-toolbar 
+      on-select-all   = "handleSelectAll"
+      on-unselect-all = "handleUnselectAll"
+      has-selection   = "[[hasSelection]]"
+      grid-mode       = "{{gridMode}}">
+    </poly-message-list-toolbar>
 
     <iron-pages id="pages" selected="[[_selectedPage(gridMode)]]">
 
@@ -128,18 +134,42 @@
           type: Boolean,
           value: true,
         },
+        hasSelection: {
+          type: Boolean,
+          value: false
+        }
       },
 
-      refreshList: function() {
+      observers: [
+        'selectedItemsChanged(gridSelectedItems.*, listSelectedItems.*)',
+      ],
+
+      selectedItemsChanged: function(s) {
+        var items = this.gridMode ? this.gridSelectedItems : this.listSelectedItems;
+        this.hasSelection = (items.length > 0);
       },
 
       handleToggleSelected: function(event) {
         this.$[this.gridMode ? 'message-grid' : 'message-list'].toggleSelectionForItem(event.model.item);
       },
 
+      handleSelectAll: function() {
+        var list = this.$[this.gridMode ? 'message-grid' : 'message-list'];
+        for (var i = 0; i < this.items.length; i++) {
+          list.selectItem(i);
+        }
+      },
+
+      handleUnselectAll: function() {
+        this.$[this.gridMode ? 'message-grid' : 'message-list'].clearSelection();
+      },
+
       _selectedPage: function(gridMode) {
         this.$[this.gridMode ? 'message-grid' : 'message-list'].clearSelection();
         return gridMode ? 0 : 1;
+      },
+
+      _hasSelection: function() {
       },
 
       showActions: function(event) {
