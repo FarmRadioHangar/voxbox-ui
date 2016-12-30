@@ -17,6 +17,10 @@
 
       paper-button {
         color: rgb(0, 188, 212);
+        --paper-button: {
+          @apply(--layout-vertical);
+          @apply(--layout-center-center);
+        };
       }
 
     </style>
@@ -24,15 +28,15 @@
     <paper-dialog with-backdrop id="dialog">
       <div class="buttons" style="padding-left: 8px;">
         <paper-button>
-          <iron-icon icon="delete" style="margin-right: 6px;"></iron-icon>
+          <iron-icon icon="delete" style="margin-bottom: 6px;"></iron-icon>
           Delete
         </paper-button>
         <paper-button>
-          <iron-icon icon="reply" style="margin-right: 6px;"></iron-icon>
+          <iron-icon icon="reply" style="margin-bottom: 6px;"></iron-icon>
           Reply
         </paper-button>
         <paper-button>
-          <iron-icon icon="communication:call" style="margin-right: 6px;"></iron-icon>
+          <iron-icon icon="communication:call" style="margin-bottom: 6px;"></iron-icon>
           Call number
         </paper-button>
       </div>
