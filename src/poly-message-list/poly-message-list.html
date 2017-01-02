@@ -142,9 +142,10 @@
 
       observers: [
         'selectedItemsChanged(gridSelectedItems.*, listSelectedItems.*)',
+        'gridModeChanged(gridMode)',
       ],
 
-      selectedItemsChanged: function(s) {
+      selectedItemsChanged: function() {
         var items = this.gridMode ? this.gridSelectedItems : this.listSelectedItems;
         this.hasSelection = (items.length > 0);
       },
@@ -164,12 +165,13 @@
         this.$[this.gridMode ? 'message-grid' : 'message-list'].clearSelection();
       },
 
+      gridModeChanged: function() {
+        this.$[this.gridMode ? 'message-grid' : 'message-list'].scroll(0, 0);
+      },
+
       _selectedPage: function(gridMode) {
         this.$[this.gridMode ? 'message-grid' : 'message-list'].clearSelection();
         return gridMode ? 0 : 1;
-      },
-
-      _hasSelection: function() {
       },
 
       showActions: function(event) {
