@@ -1,0 +1,56 @@
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="poly-message-item-styles.html">
+<link rel="import" href="poly-message-behavior.html">
+
+<dom-module id="poly-message-grid-item">
+  <template>
+
+    <style include="message-item-styles"></style>
+
+    <paper-material>
+      <div class="item">
+
+        <div class="meta">
+          <paper-checkbox on-tap="toggleSelected" checked="[[selected]]"></paper-checkbox>
+          <paper-item-body>
+            <div secondary class="date"><span>[[formatDate(item.timestamp)]]</span></div>
+            <div>[[item.endpoint]]</div>
+          </paper-item-body>
+        </div>
+
+        <paper-item-body class="content">
+          <div secondary style="white-space: normal;">
+            [[item.content]]
+          </div>
+        </paper-item-body>
+
+        <div class="controls">
+          <paper-icon-button 
+            icon   = "star"
+            class  = "star">
+          </paper-icon-button>
+          <paper-icon-button 
+            on-tap = "showMessageActions"
+            icon   = "more-vert">
+          </paper-icon-button>
+        </div>
+        
+      </div>
+    </paper-material>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'poly-message-grid-item',
+
+      behaviors: [MessageBehavior],
+
+    });
+  </script>
+</dom-module>

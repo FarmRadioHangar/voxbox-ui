@@ -1,0 +1,64 @@
+<link rel="import" href="../../bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../poly-dialog-styles/poly-dialog-styles.html">
+
+<dom-module id="poly-make-call-dialog">
+
+  <template>
+
+    <style include="dialog-styles">
+
+      :host {}
+
+      paper-item {
+        cursor: pointer;
+      }
+
+    </style>
+
+    <paper-dialog id="modal" modal entry-animation="fade-in-animation" exit-animation="fade-out-animation">
+      <h2>Make a call</h2>
+      <div>
+        <label id="label1" style="margin-right: 10px;">Channel:</label>
+        <paper-radio-group selected="c" aria-labelledby="label1">
+          <paper-radio-button name="a">Airtel 1</paper-radio-button>
+          <paper-radio-button name="b">Tigo</paper-radio-button>
+          <paper-radio-button name="c">Auto-select</paper-radio-button>
+        </paper-radio-group>
+      </div>
+      <div>
+        <paper-dropdown-menu no-animations label="Call mode">
+          <paper-listbox style="width: 300px;" class="dropdown-content">
+            <paper-item>On air (master)</paper-item>
+            <paper-item>Private</paper-item>
+          </paper-listbox>
+        </paper-dropdown-menu>
+      </div>
+      <paper-input label="Number"></paper-input>
+      <div class="buttons">
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button dialog-confirm autofocus>Call</paper-button>
+      </div>
+    </paper-dialog>
+ 
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'poly-make-call-dialog',
+
+      open: function() {
+        this.$.modal.open();
+      },
+
+    });
+
+  </script>
+
+</dom-module>

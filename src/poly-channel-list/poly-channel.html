@@ -1,0 +1,164 @@
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-icons/device-icons.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="poly-channel">
+  <template>
+    <style include="iron-flex">
+
+      :host {
+        margin-top: 10px;
+        display: flex;
+      }
+
+      .header {
+        @apply(--layout-horizontal);
+        justify-content: space-between; 
+        margin-bottom: 12px; 
+        align-items: center;
+      }
+
+      .controls {
+        @apply(--layout-horizontal);
+        border-top: 1px solid #e8e8e8;
+      }
+
+      .label {
+        margin-right: 12px; 
+        width: 80px;
+      }
+
+      .network-mode {
+        background: grey; 
+        color: white; 
+        display: flex; 
+        margin: 0 16px; 
+        width: 28px; 
+        justify-content: center; 
+        align-items: center; 
+        font-size: 12px; 
+        font-weight: bold;
+      }
+
+      .avatar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+          /*
+        color: gray;
+          */
+        background: rgb(255, 64, 129); 
+        color: white;
+      }
+
+      .slider {
+        @apply(--layout-horizontal);
+        align-items: center;
+      }
+
+      paper-slider {
+        width: 100%;
+        --paper-slider-active-color: rgb(0, 188, 212);
+        --paper-slider-knob-color: rgb(0, 188, 212);
+        --paper-slider-pin-color: rgb(0, 188, 212);
+        --paper-slider-secondary-color: rgb(0, 188, 212);
+      }
+
+      paper-button {
+        color: rgb(0, 188, 212);
+      }
+
+      paper-icon-item {
+        --paper-item-selected: {
+          background: red;
+        };
+      }
+
+      paper-card {
+        margin: 0 auto;
+        width: 800px;
+      }
+
+    </style>
+
+    <paper-card>
+
+      <div class="card-content">
+
+        <div class="header">
+
+          <div style="flex-grow: 1;">
+            {{channel.id}}
+          </div>
+        
+          <div class="label">
+            {{channel.label}} 
+          </div>
+
+          <iron-icon icon="device:signal-cellular-1-bar"></iron-icon>
+
+          <div class="network-mode">
+            2G
+          </div>
+
+        </div>
+
+        <div class="controls">
+
+          <paper-icon-item style="width: 160px; padding: 0;">
+            <div class="avatar" item-icon>
+              <iron-icon icon="communication:phone" item-icon></iron-icon>
+            </div>
+            <paper-item-body two-line>
+              <div>Donald Trump</div>
+              <div secondary>{{channel.label}}</div>
+            </paper-item-body>
+          </paper-icon-item>
+
+          <div class="slider" style="width: 100%; margin-left: 32px;">
+
+            <div style="flex: 1; display: flex; flex-direction: row;">
+              <paper-icon-button active="true" toggles="true" icon="av:volume-up" style="color: gray;"></paper-icon-button>
+              <paper-slider pin></paper-slider>
+            </div>
+
+            <div style="align-self: center;">
+              <div style="display: flex; justify-content: flex-end;">
+                <paper-button>Private</paper-button>
+                <paper-button>Hold</paper-button>
+                <paper-button>Hang up</paper-button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </paper-card>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'poly-channel',
+
+      properties: {
+        channel: {
+          type: Object,
+        },
+      },
+
+    });
+  </script>
+</dom-module>

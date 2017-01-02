@@ -1,0 +1,50 @@
+<link rel="import" href="../../bower_components/paper-material/paper-material.html">
+<link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="poly-channel.html">
+
+<dom-module id="poly-channel-list">
+  <template>
+
+    <style>
+
+      :host {
+      }
+
+      .container {
+        margin: 40px 0;
+      }
+
+    </style>
+
+    <div class="container">
+
+      <template is="dom-repeat" items="{{channels}}">
+        <poly-channel channel="{{item}}"></poly-channel>
+      </template>
+      
+    </div>
+
+    <content></content>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'poly-channel-list',
+
+      properties: {
+        channels: {
+          type: Array,
+          statePath: 'mixer.channelList',
+        },
+      },
+
+      behaviors: [
+        PolymerRedux(store),
+      ],
+
+    });
+  </script>
+</dom-module>

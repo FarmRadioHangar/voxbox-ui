@@ -1,14 +1,15 @@
-const initialMixerState = {
-  channelList: []
-};
+var initialMixerState = {};
 
-function mixer(state = initialMixerState, action) {
+function mixer(state, action) {
+  if ('undefined' === typeof state) {
+    return initialMixerState;
+  }
   switch (action.type) {
     case 'APP_INITIALIZE':
-      const { channels } = action.data;
+      var channels = action.data.channels;
       return {
-        channelList: Object.keys(channels).map(key => {
-          let channel = channels[key];
+        channelList: Object.keys(channels).map(function(key) {
+          var channel = channels[key];
           channel.id = key;
           return channel;
         })
@@ -18,23 +19,33 @@ function mixer(state = initialMixerState, action) {
   }
 }
 
-const initialMessagesState = {
-  inbox: []
-};
+var initialMessagesState = {};
 
-function messages(state = initialMessagesState, action) {
-  console.log('Redux action received: <' + action.type + '>');
+function messages(state, action) {
+  if ('undefined' === typeof state) {
+    return initialMessagesState;
+  }
   switch (action.type) {
+    case 'INBOX_RESET':
+      return {
+        inbox: []
+      };
     case 'INBOX_MESSAGES':
-      const { ids, messages } = action.data;
-      const inbox = ids.map(id => messages[id]).filter(msg => 'sms_in' === msg.type);
-      return { inbox };
+      var ids = action.data.ids;
+      var messages = action.data.messages;
+      return {
+        inbox: ids.map(function(id) {
+          return messages[id];
+        }).filter(function(msg) {
+          return 'sms_in' === msg.type;
+        })
+      };
     default:
       return state;
   }
 }
 
-const store = Redux.createStore(Redux.combineReducers({
-  mixer,
-  messages
+var store = Redux.createStore(Redux.combineReducers({
+  mixer: mixer,
+  messages: messages,
 }));

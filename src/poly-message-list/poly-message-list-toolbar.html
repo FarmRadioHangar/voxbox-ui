@@ -1,0 +1,112 @@
+<link rel="import" href="../../bower_components/iron-icons/image-icons.html">
+<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="poly-message-list-toolbar">
+  <template>
+
+    <style>
+
+      :host {
+      }
+
+      .container {
+        font-size: 13px;
+        background: white; 
+        display: flex; 
+        flex-direction: row; 
+        width: 100%; 
+        padding: 3px 0 4px;
+        border-bottom: 1px solid #d0d0d0;
+      }
+
+      paper-button {
+        color: rgb(0, 188, 212);
+      }
+
+      iron-icon {
+        margin: 0;
+      }
+
+      paper-button[disabled] {
+        color: #cacaca;
+        background: none;
+      }
+
+      paper-checkbox {
+        --paper-checkbox-checked-color: rgb(0, 188, 212); 
+        --paper-checkbox-checked-ink-color: rgb(0, 188, 212); 
+        --paper-checkbox-ink-size: 40px;
+        margin-bottom: 1px;
+      }
+
+      paper-icon-button {
+        color: rgb(0, 188, 212); 
+      }
+
+    </style>
+
+    <div class="container">
+      <div style="margin-left: 20px; flex: 2; display: flex; flex-direction: row; align-items: center;">
+        <paper-button on-tap="handleSelectAll">
+          <iron-icon icon="check" style="margin-right: 5px;"></iron-icon>
+          Select all
+        </paper-button>
+        <paper-button disabled="[[!hasSelection]]" on-tap="handleUnselectAll">
+          <iron-icon icon="check-box-outline-blank" style="margin-right: 5px;"></iron-icon>
+          Unselect all
+        </paper-button>
+        <div style="width: 30px;"></div>
+        Selected messages
+        <paper-button disabled="[[!hasSelection]]">
+          <iron-icon icon="delete" style="margin-right: 5px;"></iron-icon>
+          Delete
+        </paper-button>
+        <paper-button disabled="[[!hasSelection]]">
+          <iron-icon icon="star" style="margin-right: 5px;"></iron-icon>
+          Star
+        </paper-button>
+        <paper-button disabled="[[!hasSelection]]">
+          <iron-icon icon="star-border" style="margin-right: 5px;"></iron-icon>
+          Unstar
+        </paper-button>
+      </div>
+      <div style="margin-right: 20px; flex: 1; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;">
+        <paper-checkbox checked="" style="margin-right: 20px;">Only starred</paper-checkbox>
+        <paper-icon-button active="{{gridMode}}" toggles="true" icon="[[_gridButtonIcon(gridMode)]]"></paper-icon-button>
+      </div>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'poly-message-list-toolbar',
+
+      properties: {
+        hasSelection: {
+          type: Boolean,
+        },
+        gridMode: {
+          type: Boolean,
+          notify: true,
+        },
+      },
+
+      _gridButtonIcon: function(gridMode) {
+        return gridMode ? 'image:grid-on' : 'image:grid-off';
+      },
+
+      handleSelectAll: function() {
+        this.fire('select-all');
+      },
+
+      handleUnselectAll: function() {
+        this.fire('unselect-all');
+      },
+
+    });
+  </script>
+</dom-module>
+
