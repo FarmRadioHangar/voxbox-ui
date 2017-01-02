@@ -1,7 +1,6 @@
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="poly-channel.html">
 
 <dom-module id="poly-channel-list">
@@ -9,25 +8,21 @@
 
     <style>
 
-      :host {}
+      :host {
+      }
 
-      paper-material {
-        margin: 80px;
-        background: white;
-        padding: 30px;
-        padding-bottom: 48px;
+      .container {
+        margin: 40px 0;
       }
 
     </style>
 
-    <div>
-      <paper-material>
+    <div class="container">
 
-        <template is="dom-repeat" items="{{channels}}">
-          <poly-channel channel="{{item}}"></poly-channel>
-        </template>
-
-      </paper-material>
+      <template is="dom-repeat" items="{{channels}}">
+        <poly-channel channel="{{item}}"></poly-channel>
+      </template>
+      
     </div>
 
     <content></content>
