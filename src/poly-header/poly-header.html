@@ -42,7 +42,14 @@
     </style>
 
     <app-toolbar>
+      <!--
       <div main-title>VoxBox</div>
+      -->
+    
+      <div main-title>
+        <!-- http://fontmeme.com/fonts/young-frankenstein-font/ 28 -->
+        <img src="/images/voxbox.png" style="margin-top: -6px;" />
+      </div>
 
       <template is="dom-if" if="[[!online]]">
         <iron-icon id="offline-indicator" icon="warning"></iron-icon>
