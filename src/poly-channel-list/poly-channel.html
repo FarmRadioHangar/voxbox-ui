@@ -1,65 +1,150 @@
 <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../bower_components/iron-icons/device-icons.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
 <dom-module id="poly-channel">
   <template>
-
-    <style>
+    <style include="iron-flex">
 
       :host {
+        margin-top: 10px;
+        display: flex;
       }
 
-      .channel {
-        border-bottom: 1px solid rgb(224, 224, 224);
-        min-height: 96px;
+      .header {
+        @apply(--layout-horizontal);
+        justify-content: space-between; 
+        margin-bottom: 12px; 
+        align-items: center;
       }
 
-      .container {
+      .controls {
+        @apply(--layout-horizontal);
+        border-top: 1px solid #e8e8e8;
+      }
+
+      .label {
+        margin-right: 12px; 
+        width: 80px;
+      }
+
+      .network-mode {
+        background: grey; 
+        color: white; 
         display: flex; 
-        flex-direction: row;
-      }
-
-      .container > .avatar {
-        color: rgb(255, 64, 129); 
-        display: inline-flex; 
-        align-items: center; 
+        margin: 0 16px; 
+        width: 28px; 
         justify-content: center; 
-        font-size: 20px; 
-        margin-top: 13px; 
+        align-items: center; 
+        font-size: 12px; 
+        font-weight: bold;
       }
 
-      .container > .id {
-        flex: 2;
-        padding-left: 16px;
+      .avatar {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+          /*
+        color: gray;
+          */
+        background: rgb(255, 64, 129); 
+        color: white;
       }
 
-      .container > .label {
-        flex: 2; 
-        text-align: right;
+      .slider {
+        @apply(--layout-horizontal);
+        align-items: center;
       }
 
-      .container > .id, 
-      .container > .label {
-        color: rgba(0, 0, 0, 0.5);
-        font-size: 15px;
-        padding-top: 13px; 
-        font-weight: 400;
+      paper-slider {
+        width: 100%;
+        --paper-slider-active-color: rgb(0, 188, 212);
+        --paper-slider-knob-color: rgb(0, 188, 212);
+        --paper-slider-pin-color: rgb(0, 188, 212);
+        --paper-slider-secondary-color: rgb(0, 188, 212);
+      }
+
+      paper-button {
+        color: rgb(0, 188, 212);
+      }
+
+      paper-icon-item {
+        --paper-item-selected: {
+          background: red;
+        };
+      }
+
+      paper-card {
+        margin: 0 auto;
+        width: 800px;
       }
 
     </style>
 
-    <div class="channel">
+    <paper-card>
 
-      <div class="container">
-        <div class="avatar">
-          <iron-icon icon="communication:phone" item-icon></iron-icon>
+      <div class="card-content">
+
+        <div class="header">
+
+          <div style="flex-grow: 1;">
+            {{channel.id}}
+          </div>
+        
+          <div class="label">
+            {{channel.label}} 
+          </div>
+
+          <iron-icon icon="device:signal-cellular-1-bar"></iron-icon>
+
+          <div class="network-mode">
+            2G
+          </div>
+
         </div>
-        <div class="id">{{channel.id}}</div>
-        <div class="label">{{channel.label}}</div>
+
+        <div class="controls">
+
+          <paper-icon-item style="width: 160px; padding: 0;">
+            <div class="avatar" item-icon>
+              <iron-icon icon="communication:phone" item-icon></iron-icon>
+            </div>
+            <paper-item-body two-line>
+              <div>Donald Trump</div>
+              <div secondary>{{channel.label}}</div>
+            </paper-item-body>
+          </paper-icon-item>
+
+          <div class="slider" style="width: 100%; margin-left: 32px;">
+
+            <div style="flex: 1; display: flex; flex-direction: row;">
+              <paper-icon-button active="true" toggles="true" icon="av:volume-up" style="color: gray;"></paper-icon-button>
+              <paper-slider pin></paper-slider>
+            </div>
+
+            <div style="align-self: center;">
+              <div style="display: flex; justify-content: flex-end;">
+                <paper-button>Private</paper-button>
+                <paper-button>Hold</paper-button>
+                <paper-button>Hang up</paper-button>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
 
-    </div>
+    </paper-card>
 
   </template>
 
