@@ -4,6 +4,10 @@
 <link rel="import" href="../../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../../bower_components/app-storage/app-network-status-behavior.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/neon-animation/animations/fade-in-animation.html">    
+<link rel="import" href="../../bower_components/neon-animation/animations/fade-out-animation.html">    
+<link rel="import" href="../../bower_components/neon-animation/neon-animatable.html">
+<link rel="import" href="../../bower_components/neon-animation/neon-animated-pages.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../../bower_components/polymer/polymer.html">
@@ -55,6 +59,7 @@
           </poly-header>
         </app-header fixed>
 
+        <!--
         <iron-pages selected=[[selected]]>
           <poly-channel-list>
             <paper-fab on-tap="openMakeCallDialog" icon="communication:phone"></paper-fab>
@@ -67,6 +72,28 @@
             <paper-fab on-tap="openAddContactDialog" icon="create"></paper-fab>
           </poly-contacts>
         </iron-pages>
+        -->
+
+        <neon-animated-pages selected="[[selected]]" entry-animation="fade-in-animation" exit-animation="fade-out-animation">
+          <neon-animatable>
+            <poly-channel-list>
+              <paper-fab on-tap="openMakeCallDialog" icon="communication:phone"></paper-fab>
+            </poly-channel-list>
+          </neon-animatable>
+          <neon-animatable>
+            <poly-message-list on-banana="showMessageActions">
+              <paper-fab on-tap="openNewMessageDialog" icon="communication:message"></paper-fab>
+            </poly-message-list>
+          </neon-animatable>
+          <neon-animatable>
+            <poly-logs></poly-logs>
+          </neon-animatable>
+          <neon-animatable>
+            <poly-contacts>
+              <paper-fab on-tap="openAddContactDialog" icon="create"></paper-fab>
+            </poly-contacts>
+          </neon-animatable>
+        </neon-animated-pages>
 
       </app-header-layout>
 
