@@ -148,7 +148,7 @@
       },
 
       handleToggleSelected: function(event) {
-        this.$[this.gridMode ? 'message-grid' : 'message-list'].toggleSelectionForItem(event.model.item);
+        this.getListComponent().toggleSelectionForItem(event.model.item);
       },
 
       handleSelectAll: function() {
@@ -159,16 +159,20 @@
       },
 
       handleUnselectAll: function() {
-        this.$[this.gridMode ? 'message-grid' : 'message-list'].clearSelection();
+        this.getListComponent().clearSelection();
       },
 
       gridModeChanged: function() {
-        this.$[this.gridMode ? 'message-grid' : 'message-list'].scroll(0, 0);
+        this.getListComponent().scroll(0, 0);
       },
 
       _selectedPage: function(gridMode) {
-        this.$[this.gridMode ? 'message-grid' : 'message-list'].clearSelection();
+        this.getListComponent().clearSelection();
         return gridMode ? 0 : 1;
+      },
+
+      getListComponent: function() {
+        return this.$[this.gridMode ? 'message-grid' : 'message-list'];
       },
 
       showActions: function(event) {
