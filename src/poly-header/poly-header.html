@@ -41,8 +41,25 @@
 
     </style>
 
+    <iron-iconset-svg name="poly" size="24">
+      <svg>
+        <defs>
+          <g id="outbox">
+            <path fill="#ffffff" d="M14,14H10V11H8L12,7L16,11H14V14M16,11M5,15V5H19V15H15A3,3 0 0,1 12,18A3,3 0 0,1 9,15H5M19,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3" />
+          </g>
+        </defs>
+      </svg>
+    </iron-iconset-svg>
+
     <app-toolbar>
+      <!--
       <div main-title>VoxBox</div>
+      -->
+    
+      <div main-title>
+        <!-- http://fontmeme.com/fonts/young-frankenstein-font/ 28 -->
+        <img src="/images/voxbox.png" style="margin-top: -6px;" />
+      </div>
 
       <template is="dom-if" if="[[!online]]">
         <iron-icon id="offline-indicator" icon="warning"></iron-icon>
@@ -59,8 +76,11 @@
         <poly-tab label="MIXER" icon="av:volume-up"></poly-tab>
       </paper-tab>
       <paper-tab>
-        <poly-tab label="MESSAGES" icon="communication:chat"></poly-tab>
+        <poly-tab label="SMS INBOX" icon="move-to-inbox"></poly-tab>
         <paper-badge for="number" label="4"></paper-badge>
+      </paper-tab>
+      <paper-tab>
+        <poly-tab label="SENT SMS" icon="poly:outbox"></poly-tab>
       </paper-tab>
       <paper-tab>
         <poly-tab label="CALL HISTORY" icon="history"></poly-tab>
@@ -80,7 +100,7 @@
       handleTap: function(event) {
         this.fire('tap-settings');
       },
-      
+
       properties: {
         selected: {
           type: Number,
