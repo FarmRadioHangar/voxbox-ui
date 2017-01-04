@@ -33,12 +33,17 @@
         width: 80px;
       }
 
+      .provider {
+        margin-right: 12px; 
+        color: #737373;
+      }
+
       .network-mode {
         background: grey; 
         color: white; 
         display: flex; 
-        margin: 0 16px; 
-        width: 28px; 
+        margin: 0 0 0 16px; 
+        padding: 0 6px;
         justify-content: center; 
         align-items: center; 
         font-size: 12px; 
@@ -104,11 +109,13 @@
             {{channel.label}} 
           </div>
 
+          <div class="provider">
+            {{channel.connection.provider}} 
+          </div>
+
           <iron-icon icon="device:signal-cellular-1-bar"></iron-icon>
 
-          <div class="network-mode">
-            2G
-          </div>
+          <div class="network-mode">[[networkMode]]</div>
 
         </div>
 
@@ -158,6 +165,21 @@
         channel: {
           type: Object,
         },
+        networkMode: {
+          type: String,
+        },
+      },
+
+      observers: [
+        'networkModeChanged(channel.connection.mode)',
+      ],
+
+      networkModeChanged: function(mode) {
+        switch (mode) {
+          case 'GSM/GPRS':
+            mode = '2G';
+        }
+        this.networkMode = mode;
       },
 
     });
