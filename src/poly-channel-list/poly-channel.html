@@ -113,7 +113,7 @@
             {{channel.connection.provider}} 
           </div>
 
-          <iron-icon icon="device:signal-cellular-1-bar"></iron-icon>
+          <iron-icon icon="[[_signalStrengthIcon(signalQuality)]]"></iron-icon>
 
           <div class="network-mode">[[networkMode]]</div>
 
@@ -168,11 +168,23 @@
         networkMode: {
           type: String,
         },
+        signalQuality: {
+          type: Number,
+          value: 0,
+        },
       },
 
       observers: [
         'networkModeChanged(channel.connection.mode)',
+        'signalStrengthChanged(channel.connection.rssi)',
       ],
+
+      signalStrengthChanged: function(rssi) {
+        var s = parseInt(rssi.split(',')[0]);
+        if (s) {
+          this.signalQuality = Math.min(4, Math.floor(s/6));
+        }
+      },
 
       networkModeChanged: function(mode) {
         switch (mode) {
@@ -180,6 +192,10 @@
             mode = '2G';
         }
         this.networkMode = mode;
+      },
+
+      _signalStrengthIcon(strength) {
+        return 'device:signal-cellular-' + strength + '-bar';
       },
 
     });
