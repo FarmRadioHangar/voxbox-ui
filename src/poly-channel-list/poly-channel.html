@@ -57,12 +57,26 @@
         box-sizing: border-box;
         width: 40px;
         height: 40px;
-        border-radius: 50%;
           /*
+        border-radius: 50%;
         color: gray;
-          */
         background: rgb(255, 64, 129); 
         color: white;
+          */
+      }
+
+      .avatar-free {
+        /*
+        background: rgb(0, 188, 212);
+          */
+        color: rgb(0, 188, 212);
+      }
+
+      .avatar-defunct {
+        /*
+        background: gray;
+          */
+        color: gray;
       }
 
       .slider {
@@ -102,51 +116,57 @@
         <div class="header">
 
           <div style="flex-grow: 1;">
-            {{channel.id}}
+            {{channelId}}
           </div>
         
           <div class="label">
-            {{channel.label}} 
+            {{label}} 
           </div>
 
           <div class="provider">
-            {{channel.connection.provider}} 
+            {{provider}} 
           </div>
 
-          <iron-icon icon="[[_signalStrengthIcon(signalQuality)]]"></iron-icon>
+          <iron-icon icon="[[_signalStrengthIcon(rssi)]]"></iron-icon>
 
-          <div class="network-mode">[[networkMode]]</div>
+          <div class="network-mode">[[_networkMode(networkMode)]]</div>
 
         </div>
 
         <div class="controls">
 
           <paper-icon-item style="width: 160px; padding: 0;">
-            <div class="avatar" item-icon>
-              <iron-icon icon="communication:phone" item-icon></iron-icon>
+            <div class$="avatar [[_avatarClass(mode)]]" item-icon>
+              <iron-icon icon="[[_avatarIcon(mode)]]" item-icon></iron-icon>
             </div>
             <paper-item-body two-line>
-              <div>Donald Trump</div>
-              <div secondary>{{channel.label}}</div>
+              <div>[[_displayName(name, channelId, number)]]</div>
+              <div secondary>[[_displayNumber(number, mode)]]</div>
             </paper-item-body>
           </paper-icon-item>
 
-          <div class="slider" style="width: 100%; margin-left: 32px;">
+          <template is="dom-if" if="[[_controlsVisible(mode)]]">
 
-            <div style="flex: 1; display: flex; flex-direction: row;">
-              <paper-icon-button active="true" toggles="true" icon="av:volume-up" style="color: gray;"></paper-icon-button>
-              <paper-slider pin></paper-slider>
-            </div>
+            <div class="slider" style="width: 100%; margin-left: 32px;">
 
-            <div style="align-self: center;">
-              <div style="display: flex; justify-content: flex-end;">
-                <paper-button>Private</paper-button>
-                <paper-button>Hold</paper-button>
-                <paper-button>Hang up</paper-button>
+              [[mode]]
+
+              <div style="flex: 1; display: flex; flex-direction: row;">
+                <paper-icon-button active="true" toggles="true" icon="av:volume-up" style="color: gray;"></paper-icon-button>
+                <paper-slider value="[[level]]" pin></paper-slider>
               </div>
+
+              <div style="align-self: center;">
+                <div style="display: flex; justify-content: flex-end;">
+                  <paper-button>Private</paper-button>
+                  <paper-button>Hold</paper-button>
+                  <paper-button>Hang up</paper-button>
+                </div>
+              </div>
+
             </div>
 
-          </div>
+          </template>
 
         </div>
 
@@ -162,40 +182,94 @@
       is: 'poly-channel',
 
       properties: {
-        channel: {
-          type: Object,
+        mode: {
+          type: String,
+        },
+        level: {
+          type: Number,
+        },
+        rssi: {
+          type: String,
+        },
+        channelId: {
+          type: String,
+        },
+        label: {
+          type: String,
+        },
+        provider: {
+          type: String,
         },
         networkMode: {
           type: String,
         },
-        signalQuality: {
-          type: Number,
-          value: 0,
+        contact: {
+          type: Object,
+        },
+        name: {
+          type: String,
+        },
+        number: {
+          type: String,
         },
       },
 
       observers: [
-        'networkModeChanged(channel.connection.mode)',
-        'signalStrengthChanged(channel.connection.rssi)',
+        '_contactChanged(contact.*)'
       ],
 
-      signalStrengthChanged: function(rssi) {
+      _signalStrengthIcon(rssi) {
         var s = parseInt(rssi.split(',')[0]);
         if (s) {
-          this.signalQuality = Math.min(4, Math.floor(s/6));
+          var quality = Math.min(4, Math.floor(s/6));
+          return 'device:signal-cellular-' + quality + '-bar';
         }
       },
 
-      networkModeChanged: function(mode) {
+      _avatarClass: function(mode) {
+        return 'avatar-' + mode;
+      },
+
+      _avatarIcon: function(mode) {
+        switch (mode) {
+          case 'defunct':
+            return 'block';
+          case 'free':
+          default:
+            return 'communication:phone';
+        }
+      },
+
+      _displayName: function(name, chan, number) {
+        if (name === chan)
+          return number ? 'Last call' : '';
+        else
+          return name;
+      },
+
+      _displayNumber: function(number, mode) {
+        return number;
+      },
+
+      _controlsVisible: function(mode) {
+        return mode != 'defunct';
+      },
+
+      _networkMode: function(mode) {
         switch (mode) {
           case 'GSM/GPRS':
-            mode = '2G';
+            return '2G';
         }
-        this.networkMode = mode;
+        return '';
       },
 
-      _signalStrengthIcon(strength) {
-        return 'device:signal-cellular-' + strength + '-bar';
+      _contactChanged: function(data) {
+        console.log('_contactChanged');
+        var contact = data.value;
+        if (contact) {
+          this.name = contact.name;
+          this.number = contact.number;
+        }
       },
 
     });
