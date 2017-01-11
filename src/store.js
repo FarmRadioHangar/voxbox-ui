@@ -1,4 +1,6 @@
-var initialMixerState = {};
+var initialMixerState = {
+  channelList: [],
+};
 
 function mixer(state, action) {
   if ('undefined' === typeof state) {
@@ -12,7 +14,19 @@ function mixer(state, action) {
           var channel = channels[key];
           channel.id = key;
           return channel;
-        })
+        }),
+      };
+    case 'CHANNEL_UPDATE':
+      var channels = state.channelList;
+      return {
+        channelList: channels.map(function(channel) {
+          if (action.data.hasOwnProperty(channel.id)) {
+            var key = channel.id;
+            channel = action.data[key];
+            channel.id = key;
+          } 
+          return channel;
+        }),
       };
     default:
       return state;
@@ -31,15 +45,18 @@ function messages(state, action) {
         inbox: []
       };
     case 'INBOX_MESSAGES':
-      var ids = action.data.ids;
-      var messages = action.data.messages;
-      return {
-        inbox: ids.map(function(id) {
-          return messages[id];
-        }).filter(function(msg) {
-          return 'sms_in' === msg.type;
-        })
-      };
+      var ids = action.data.ids,
+          inbox  = [],
+          outbox = [];
+      ids.forEach(function(id) {
+        var message = action.data.messages[id];
+        if ('sms_in' === message.type) {
+          inbox.push(message);
+        } else {
+          outbox.push(message);
+        }
+      });
+      return { inbox: inbox, outbox: outbox, };
     default:
       return state;
   }
