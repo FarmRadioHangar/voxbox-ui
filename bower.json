@@ -17,7 +17,8 @@
     "redux": "https://cdnjs.cloudflare.com/ajax/libs/redux/3.0.4/redux.js",
     "app-storage": "PolymerElements/app-storage#^0.9.8",
     "material-design-lite": "^1.2.1",
-    "material-design-icons": "^3.0.1"
+    "material-design-icons": "^3.0.1",
+    "font-awesome-animation": "^0.0.9"
   },
   "devDependencies": {
     "iron-component-page": "PolymerElements/iron-component-page#^1.0.0",
