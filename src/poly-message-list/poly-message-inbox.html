@@ -1,0 +1,245 @@
+<link rel="import" href="../../bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="poly-message-actions.html"> 
+<link rel="import" href="poly-message-grid-item.html">
+<link rel="import" href="poly-message-list-item.html"> 
+<link rel="import" href="poly-message-list-toolbar.html"> 
+<link rel="import" href="../state-container.html">
+
+<dom-module id="poly-message-inbox">
+  <template>
+
+    <style>
+
+      :host {
+        /*
+        display: block;
+          */
+        height: calc(100vh - 115px);
+        width: 100vw;
+        display: flex;
+        flex-direction: column;
+      }
+
+      iron-pages {
+        /*
+        display: block;
+          */
+        height: 100%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      iron-list {
+        flex: 1 1 auto;
+        padding-top: 32px;
+        padding-bottom: 32px;
+      }
+
+      .grid-item {
+        height: 230px;
+        width: 290px;
+      }
+
+      .list-item {
+        height: 170px;
+        width: 290px;
+      }
+
+      paper-fab {
+        position: fixed;
+        right: 30px;
+        top: 180px;
+        color: rgba(0,0,0,.87);
+        --paper-fab-background: white;
+        --paper-fab-keyboard-focus-background: #f4f4f4;
+      }
+
+    </style>
+
+    <poly-message-actions id="actions"></poly-message-actions>
+
+    <poly-message-list-toolbar 
+      on-select-all   = "handleSelectAll"
+      on-unselect-all = "handleUnselectAll"
+      has-selection   = "[[hasSelection]]"
+      grid-mode       = "{{gridMode}}"
+      incoming>
+    </poly-message-list-toolbar>
+
+    <iron-pages selected="[[_selectedPage(gridMode)]]">
+
+      <iron-list
+        id                  = "message-grid"
+        items               = "[[items]]"
+        selected-items      = "{{gridSelectedItems}}"
+        on-scroll = "onScroll"
+        selection-enabled 
+        multi-selection
+        grid>
+
+        <template>
+          <div class="grid-item">
+            <poly-message-grid-item 
+              item               = "[[item]]"
+              index              = "[[index]]"
+              selected           = "[[selected]]"
+              on-actions-tap     = "showActions"
+              on-toggle-selected = "handleToggleSelected">
+            </poly-message-grid-item>
+          </div>
+        </template>
+
+      </iron-list>
+
+      <iron-list
+        id             = "message-list"
+        items          = "[[items]]"
+        selected-items = "{{listSelectedItems}}"
+        selection-enabled 
+        multi-selection>
+
+        <template>
+          <div class="list-item">
+            <poly-message-list-item 
+              item               = "[[item]]"
+              index              = "[[index]]"
+              selected           = "[[selected]]"
+              on-actions-tap     = "showActions"
+              on-toggle-selected = "handleToggleSelected">
+            </poly-message-list-item>
+          </div>
+        </template>
+
+      </iron-list>
+
+    </iron-pages>
+
+    <paper-fab on-tap="hello" icon="hardware:keyboard-arrow-down"></paper-fab>
+
+    <content></content>
+
+  </template>
+
+  <script>
+    Polymer({
+
+      is: 'poly-message-inbox',
+
+      properties: {
+        items: {
+          type: Array,
+          value: [],
+          statePath: 'state.messages',
+        },
+//        items: {
+//          type: Array,
+////          value: [],
+//          statePath: 'messages.inbox',
+//        },
+        listSelectedItems: {
+          type: Object,
+        },
+        gridSelectedItems: {
+          type: Object,
+        },
+        gridMode: {
+          type: Boolean,
+          value: true,
+        },
+        hasSelection: {
+          type: Boolean,
+          value: false
+        },
+      },
+
+      observers: [
+        'selectedItemsChanged(gridSelectedItems.*, listSelectedItems.*)',
+        'gridModeChanged(gridMode)',
+      ],
+
+      selectedItemsChanged: function() {
+        var items = this.gridMode ? this.gridSelectedItems : this.listSelectedItems;
+        this.hasSelection = (items.length > 0);
+      },
+
+      handleToggleSelected: function(event) {
+        this.getListComponent().toggleSelectionForItem(event.model.item);
+      },
+
+      handleSelectAll: function() {
+        var list = this.getListComponent();
+        for (var i = 0; i < this.items.length; i++) {
+          list.selectItem(i);
+        }
+      },
+
+      handleUnselectAll: function() {
+        this.getListComponent().clearSelection();
+      },
+
+      gridModeChanged: function() {
+        this.getListComponent().scroll(0, 0);
+      },
+
+      _selectedPage: function(gridMode) {
+        this.getListComponent().clearSelection();
+        return gridMode ? 0 : 1;
+      },
+
+      getListComponent: function() {
+        return this.$[this.gridMode ? 'message-grid' : 'message-list'];
+      },
+
+      showActions: function(event) {
+        var body = document.querySelector('body');
+        Polymer.dom(body).appendChild(this.$.actions);
+        this.$.actions.open();
+      },
+
+      hello: function() {
+        this.getState().push('state.messages', {"timestamp":"1480968424703","type":"sms_in","endpoint":"0756502265","channel_id":"vodacom1","content":"waaaaaaaaaaaaaaaaaaaaaap"});
+
+        //this.push('items', {
+        //  channel_id: "airtel1",
+        //  content: "What!!!",
+        //  endpoint: "0678647268",
+        //  timestamp: "1484301770577",
+        //  type: "sms_in",
+        //});
+        //this.dispatch({
+        //  type: 'INBOX_UPDATE',
+        //  data: {
+        //    "xxx": {
+        //      channel_id: "airtel1",
+        //      content: "What!!!",
+        //      endpoint: "0678647268",
+        //      timestamp: "1484301770577",
+        //      type: "sms_in",
+        //    }
+        //  }
+        //});
+      },
+
+      onScroll: function(event) {
+        //console.log('onScroll');
+        //console.log(event);
+      },
+
+      behaviors: [
+//        PolymerRedux(store),
+        ReceiverBehavior,
+
+//        StateReceiverBehavior,
+//        StateWriterBehavior,
+      ],
+
+    });
+  </script>
+</dom-module>

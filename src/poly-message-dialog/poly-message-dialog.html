@@ -19,9 +19,17 @@
         margin-right: 10px;
       }
 
+      .buttons {
+        clear: both;
+      }
+
     </style>
 
-    <paper-dialog id="modal" modal entry-animation="fade-in-animation" exit-animation="fade-out-animation">
+    <paper-dialog 
+      id              = "modal"
+      entry-animation = "fade-in-animation"
+      exit-animation  = "fade-out-animation"
+      modal>
       <h2>Send message</h2>
       <div>
         <label id="label1">Channel:</label>
@@ -32,10 +40,13 @@
         </paper-radio-group>
       </div>
       <paper-input label="Number"></paper-input>
-      <paper-textarea label="Message content"></paper-textarea>
-      <div>
-        Characters remaining: 240
-      </div>
+      <paper-textarea 
+        label     = "Message content"
+        value     = "{{message}}"
+        maxlength = "240"
+        char-counter 
+        auto-validate>
+      </paper-textarea>
       <div class="buttons">
         <paper-button dialog-dismiss>Cancel</paper-button>
         <paper-button dialog-confirm autofocus>Send</paper-button>
@@ -49,6 +60,13 @@
     Polymer({
 
       is: 'poly-message-dialog',
+
+      properties: {
+        message: {
+          type: String,
+          value: '',
+        }
+      },
 
       open: function() {
         this.$.modal.open();
