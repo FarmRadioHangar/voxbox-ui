@@ -1,11 +1,14 @@
+<link rel="import" href="../../bower_components/app-storage/app-network-status-behavior.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../bower_components/iron-icons/device-icons.html">
-<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/iron-icons/social-icons.html">
 <link rel="import" href="../../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../../bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="../../bower_components/paper-slider/paper-slider.html">
+<link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="poly-channel-actions.html">
 
 <dom-module id="poly-channel">
   <template>
@@ -25,7 +28,9 @@
 
       .controls {
         @apply(--layout-horizontal);
+        /*
         border-top: 1px solid #e8e8e8;
+          */
       }
 
       .label {
@@ -65,6 +70,10 @@
           */
       }
 
+      .avatar-ring {
+        color: #f50057;
+      }
+
       .avatar-free {
         /*
         background: rgb(0, 188, 212);
@@ -84,6 +93,16 @@
         align-items: center;
       }
 
+      .ribbon {
+        width: 100%; 
+        height: 3px; 
+        background: #e4e4e4;
+      }
+
+      .ribbon-ring {
+        background: #f50057;
+      }
+
       paper-slider {
         width: 100%;
         --paper-slider-active-color: rgb(0, 188, 212);
@@ -96,11 +115,12 @@
         color: rgb(0, 188, 212);
       }
 
+      /*
       paper-icon-item {
         --paper-item-selected: {
-          background: red;
         };
       }
+      */
 
       paper-card {
         margin: 0 auto;
@@ -124,23 +144,37 @@
           </div>
 
           <div class="provider">
-            {{provider}} 
+            [[_displayProvider(provider)]]
           </div>
 
-          <iron-icon icon="[[_signalStrengthIcon(rssi)]]"></iron-icon>
+          <iron-icon icon="[[_signalStrengthIcon(rssi, online)]]"></iron-icon>
 
           <div class="network-mode">[[_networkMode(networkMode)]]</div>
 
         </div>
 
+        <!--
+        <div style="width: 100%; height: 1px; background: #eaeaea;"></div> -->
+
+        <div style="align-self: center;">
+          <poly-channel-actions 
+            direction = "[[direction]]"
+            mode      = "[[mode]]">
+          </poly-channel-actions>
+        </div>
+
+        <!--
+        <div style="width: 100%; height: 1px; background: #eaeaea;"></div>
+        -->
+
         <div class="controls">
 
-          <paper-icon-item style="width: 160px; padding: 0;">
+          <paper-icon-item style="width: 250px; padding: 0;">
             <div class$="avatar [[_avatarClass(mode)]]" item-icon>
               <iron-icon icon="[[_avatarIcon(mode)]]" item-icon></iron-icon>
             </div>
             <paper-item-body two-line>
-              <div>[[_displayName(name, channelId, number)]]</div>
+              <div>[[_displayName(name, channelId, number, mode, direction)]]</div>
               <div secondary>[[_displayNumber(number, mode)]]</div>
             </paper-item-body>
           </paper-icon-item>
@@ -148,27 +182,21 @@
           <template is="dom-if" if="[[_controlsVisible(mode)]]">
 
             <div class="slider" style="width: 100%; margin-left: 32px;">
-
-              [[mode]]
-
               <div style="flex: 1; display: flex; flex-direction: row;">
-                <paper-icon-button active="true" toggles="true" icon="av:volume-up" style="color: gray;"></paper-icon-button>
+                <paper-icon-button id="mute-button" active="true" toggles="true" icon="av:volume-up"></paper-icon-button>
                 <paper-slider value="[[level]]" pin></paper-slider>
               </div>
-
-              <div style="align-self: center;">
-                <div style="display: flex; justify-content: flex-end;">
-                  <paper-button>Private</paper-button>
-                  <paper-button>Hold</paper-button>
-                  <paper-button>Hang up</paper-button>
-                </div>
-              </div>
-
+              <paper-button>Redial number</paper-button>
             </div>
+            <paper-tooltip for="mute-button" offset="0">Mute channel</paper-tooltip>
 
           </template>
 
         </div>
+
+        <paper-button>New call</paper-button>
+        <paper-button>Redial number</paper-button>
+        <paper-button>Edit contact</paper-button>
 
       </div>
 
@@ -212,17 +240,21 @@
         number: {
           type: String,
         },
+        direction: {
+          type: String,
+        },
       },
 
       observers: [
-        '_contactChanged(contact.*)'
+        '_contactChanged(contact.*)',
       ],
 
-      _signalStrengthIcon(rssi) {
+      _signalStrengthIcon(rssi, online) {
         var s = parseInt(rssi.split(',')[0]);
         if (s) {
           var quality = Math.min(4, Math.floor(s/6));
-          return 'device:signal-cellular-' + quality + '-bar';
+          var warn = online ? '' : 'connected-no-internet-';
+          return 'device:signal-cellular-' + warn + quality + '-bar';
         }
       },
 
@@ -234,21 +266,37 @@
         switch (mode) {
           case 'defunct':
             return 'block';
+          case 'ring':
+            return 'communication:ring-volume';
           case 'free':
           default:
             return 'communication:phone';
         }
       },
 
-      _displayName: function(name, chan, number) {
-        if (name === chan)
-          return number ? 'Last call' : '';
-        else
+      _displayName: function(name, chan, number, mode, direction) {
+        if (name === chan) {
+          if ('free' === mode) {
+            return number ? 'Last call' : '';
+          } else if ('ring' === mode && 'incoming' === direction) {
+            return 'Incoming call';
+          } else {
+            return number;
+          }
+        } else {
           return name;
+        }
       },
 
       _displayNumber: function(number, mode) {
         return number;
+      },
+
+      _displayProvider: function(provider) {
+        if ('NONE' == provider) {
+          return '';
+        }
+        return provider;
       },
 
       _controlsVisible: function(mode) {
@@ -271,6 +319,14 @@
           this.number = contact.number;
         }
       },
+
+      _ribbonColor: function(mode) {
+        return 'ribbon ribbon-' + mode;
+      },
+
+      behaviors: [
+        Polymer.AppNetworkStatusBehavior, 
+      ],
 
     });
   </script>
