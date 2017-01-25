@@ -9,7 +9,6 @@
 <link rel="import" href="../../bower_components/neon-animation/neon-animatable.html">
 <link rel="import" href="../../bower_components/neon-animation/neon-animated-pages.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="../../bower_components/polymer-redux/polymer-redux.html">
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../poly-add-contact-dialog/poly-add-contact-dialog.html">
 <link rel="import" href="../poly-channel-list/poly-channel-list.html">
@@ -19,7 +18,9 @@
 <link rel="import" href="../poly-make-call-dialog/poly-make-call-dialog.html">
 <link rel="import" href="../poly-message-dialog/poly-message-dialog.html">
 <link rel="import" href="../poly-message-handler/poly-message-handler.html">
-<link rel="import" href="../poly-message-list/poly-message-list.html">
+<link rel="import" href="../poly-message-list/poly-message-inbox.html">
+<link rel="import" href="../poly-message-list/poly-message-outbox.html">
+<link rel="import" href="../state-container.html">
 
 <dom-module id="poly-app">
   <template>
@@ -59,21 +60,6 @@
           </poly-header>
         </app-header fixed>
 
-        <!--
-        <iron-pages selected=[[selected]]>
-          <poly-channel-list>
-            <paper-fab on-tap="openMakeCallDialog" icon="communication:phone"></paper-fab>
-          </poly-channel-list>
-          <poly-message-list>
-            <paper-fab on-tap="openNewMessageDialog" icon="communication:message"></paper-fab>
-          </poly-message-list>
-          <poly-logs></poly-logs>
-          <poly-contacts>
-            <paper-fab on-tap="openAddContactDialog" icon="create"></paper-fab>
-          </poly-contacts>
-        </iron-pages>
-        -->
-
         <neon-animated-pages selected="[[selected]]" entry-animation="fade-in-animation" exit-animation="fade-out-animation">
           <neon-animatable>
             <poly-channel-list>
@@ -81,9 +67,12 @@
             </poly-channel-list>
           </neon-animatable>
           <neon-animatable>
-            <poly-message-list>
+            <poly-message-inbox>
               <paper-fab on-tap="openNewMessageDialog" icon="communication:message"></paper-fab>
-            </poly-message-list>
+            </poly-message-inbox>
+          </neon-animatable>
+          <neon-animatable>
+            <poly-message-outbox></poly-message-outbox>
           </neon-animatable>
           <neon-animatable>
             <poly-logs></poly-logs>
@@ -110,6 +99,9 @@
 
       is: 'poly-app',
 
+      ready: function() {
+      },
+
       handleToggleSettings: function() {
         this.$.drawer.toggle();
       },
@@ -131,20 +123,36 @@
       },
 
       handleMessage: function(event, payload) {
-        console.log('handleMessage()');
-        console.dir(payload);
         switch (payload.event) {
           case 'initialize':
-            this.dispatch({
-              type: 'APP_INITIALIZE',
-              data: payload.data.mixer,
-            });
+            var channels = payload.data.mixer.channels;
+            this.getState().set('state.mixer.channels', 
+              Object.keys(channels).map(function(key) {
+                var channel = channels[key];
+                channel.id = key;
+                return channel;
+              }));
             break;
           case 'inboxMessages':
-            this.dispatch({
-              type: 'INBOX_MESSAGES',
-              data: payload.data,
+            var messages = payload.data.inbox.messages;
+            var ids = messages.ids,
+                inbox  = [],
+                outbox = [];
+            ids.forEach(function(id) {
+              var message = messages.data[id];
+              if ('sms_in' === message.type) {
+                inbox.push(message);
+              } else {
+                outbox.push(message);
+              }
             });
+            var state = this.getState();
+            state.set('state.messages.inbox', inbox);
+            state.set('state.messages.outbox', outbox);
+            break;
+          case 'inboxUpdate':
+            break;
+          case 'channelUpdate':
             break;
           default:
             console.warn('Unhandled message type: ' + payload.event);
@@ -167,11 +175,20 @@
         this.$['add-contact-dialog'].open();
       },
 
-      properties: {},
+      properties: {
+        state: {
+          type: Object,
+          value: {
+            mixer: {},
+            messages: [],
+          },
+        },
+      },
 
       behaviors: [
         Polymer.AppNetworkStatusBehavior, 
-        PolymerRedux(store),
+        ProviderBehavior,
+        ReceiverBehavior,
       ],
 
     });
