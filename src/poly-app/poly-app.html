@@ -38,6 +38,10 @@
 
     </style>
 
+    <!--
+    [[__stateDump(state.messages.inbox)]]
+    -->
+
     <poly-message-handler 
       id         = "message-handler"
       on-open    = "handleConnectionOpened"
@@ -67,12 +71,13 @@
             </poly-channel-list>
           </neon-animatable>
           <neon-animatable>
-            <poly-message-inbox>
+            <poly-message-inbox message-handler="message-handler">
               <paper-fab on-tap="openNewMessageDialog" icon="communication:message"></paper-fab>
             </poly-message-inbox>
           </neon-animatable>
           <neon-animatable>
-            <poly-message-outbox></poly-message-outbox>
+            <poly-message-outbox message-handler="message-handler">
+            </poly-message-outbox>
           </neon-animatable>
           <neon-animatable>
             <poly-logs></poly-logs>
@@ -99,7 +104,8 @@
 
       is: 'poly-app',
 
-      ready: function() {
+      __stateDump: function(state) {
+        return JSON.stringify(state);
       },
 
       handleToggleSettings: function() {
@@ -134,12 +140,12 @@
               }));
             break;
           case 'inboxMessages':
-            var messages = payload.data.inbox.messages;
-            var ids = messages.ids,
+            var messages = payload.data.messages;
+            var ids = payload.data.ids,
                 inbox  = [],
                 outbox = [];
             ids.forEach(function(id) {
-              var message = messages.data[id];
+              var message = messages[id];
               if ('sms_in' === message.type) {
                 inbox.push(message);
               } else {
@@ -180,7 +186,10 @@
           type: Object,
           value: {
             mixer: {},
-            messages: [],
+            messages: {
+              inbox: [],
+              outbox: [],
+            },
           },
         },
       },

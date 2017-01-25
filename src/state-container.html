@@ -15,7 +15,7 @@
       var value = changeRecord.value;
       this.watchers.forEach(function(watcher) {
         if (changeRecord.path === watcher.path) {
-          watcher.component.setValue(changeRecord.value);
+          watcher.component.set(watcher.property, changeRecord.value);
         } else if (changeRecord.path.startsWith(watcher.path) && changeRecord.path.endsWith('.splices')) {
           value.indexSplices.forEach(function(splice) {
             var items = [];

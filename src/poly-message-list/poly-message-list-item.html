@@ -49,6 +49,7 @@
 
           <div class="controls">
             <paper-icon-button 
+              on-tap = "toggleFavorite()"
               icon   = "star"
               class  = "star">
             </paper-icon-button>
@@ -76,7 +77,13 @@
 
       is: 'poly-message-list-item',
 
-      behaviors: [MessageBehavior],
+      toggleFavorite: function() {
+      },
+
+      behaviors: [
+        MessageBehavior,
+        ReceiverBehavior,
+      ],
 
     });
   </script>

@@ -132,11 +132,15 @@
 
       is: 'poly-message-inbox',
 
+      ready: function() {
+        console.log(this.messageHandler);
+      },
+
       properties: {
         items: {
           type: Array,
           value: [],
-          statePath: 'state.messages',
+          statePath: 'state.messages.inbox',
         },
 //        items: {
 //          type: Array,
@@ -233,11 +237,7 @@
       },
 
       behaviors: [
-//        PolymerRedux(store),
         ReceiverBehavior,
-
-//        StateReceiverBehavior,
-//        StateWriterBehavior,
       ],
 
     });
