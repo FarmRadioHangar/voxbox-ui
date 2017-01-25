@@ -1,24 +1,24 @@
 <script>
-    MessageBehavior = {
+  MessageBehavior = {
 
-      formatDate: function(stamp) {
-        return moment(Number(stamp)).format("ddd, MMM Do YYYY, h:mm:ss a"); 
+    formatDate: function(stamp) {
+      return moment(Number(stamp)).format("ddd, MMM Do YYYY, h:mm:ss a"); 
+    },
+
+    toggleSelected: function(event) {
+      this.fire('toggle-selected');
+    },
+
+    showMessageActions: function() {
+      this.fire('actions-tap');
+    },
+
+    properties: {
+      selected: {
+        type: Boolean,
+        value: false,
       },
+    },
 
-      toggleSelected: function(event) {
-        this.fire('toggle-selected');
-      },
-
-      showMessageActions: function() {
-        this.fire('actions-tap');
-      },
-
-      properties: {
-        selected: {
-          type: Boolean,
-          value: false
-        },
-      },
-
-    };
+  };
 </script>
