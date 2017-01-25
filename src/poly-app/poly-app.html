@@ -38,10 +38,6 @@
 
     </style>
 
-    <!--
-    [[__stateDump(state.messages.inbox)]]
-    -->
-
     <poly-message-handler 
       id         = "message-handler"
       on-open    = "handleConnectionOpened"
@@ -71,12 +67,12 @@
             </poly-channel-list>
           </neon-animatable>
           <neon-animatable>
-            <poly-message-inbox message-handler="message-handler">
+            <poly-message-inbox id="inbox">
               <paper-fab on-tap="openNewMessageDialog" icon="communication:message"></paper-fab>
             </poly-message-inbox>
           </neon-animatable>
           <neon-animatable>
-            <poly-message-outbox message-handler="message-handler">
+            <poly-message-outbox id="outbox">
             </poly-message-outbox>
           </neon-animatable>
           <neon-animatable>
@@ -103,10 +99,6 @@
     Polymer({
 
       is: 'poly-app',
-
-      __stateDump: function(state) {
-        return JSON.stringify(state);
-      },
 
       handleToggleSettings: function() {
         this.$.drawer.toggle();
@@ -146,6 +138,7 @@
                 outbox = [];
             ids.forEach(function(id) {
               var message = messages[id];
+              message.id = id;
               if ('sms_in' === message.type) {
                 inbox.push(message);
               } else {
