@@ -1,0 +1,74 @@
+<script>
+
+  ProviderBehavior = {
+
+    observers: [
+      '_stateChanged(state.*)'
+    ],
+
+    created: function() {
+      this.watchers = [];
+      window.__container__ = this;
+    },
+
+    _stateChanged: function(changeRecord) {
+      var value = changeRecord.value;
+      this.watchers.forEach(function(watcher) {
+        if (changeRecord.path === watcher.path) {
+          watcher.component.setValue(changeRecord.value);
+        } else if (changeRecord.path.startsWith(watcher.path) && changeRecord.path.endsWith('.splices')) {
+          value.indexSplices.forEach(function(splice) {
+            var items = [];
+            for (var i = 0; i < splice.addedCount; i++) {
+              items.push(splice.object[splice.index + i]);
+            }
+            var args = [watcher.property, splice.index, splice.removed.length].concat(items);
+            watcher.component.splice.apply(watcher.component, args);
+          }, this);
+        }
+      }, this);
+    },
+
+    watch: function(component, property, path) {
+      this.watchers.push({
+        component: component,
+        property: property,
+        path: path,
+      });
+    },
+
+    unwatch: function(component) {
+      this.watchers = this.watchers.filter(function(watcher) {
+        return watcher.component !== component;
+      });
+    },
+
+  };
+
+  ReceiverBehavior = {
+
+    attached: function() {
+      var component = this;
+      Object.keys(component.properties).forEach(function(name) {
+        var property = component.properties[name];
+        if (property.statePath) {
+          var obj = window.__container__.get(property.statePath);
+          if (obj) {
+            component.set(name, JSON.parse(JSON.stringify(obj)));
+          }
+          window.__container__.watch(component, name, property.statePath);
+        }
+      });
+    },
+
+    detached: function() {
+      window.__container__.unwatch(this);
+    },
+
+    getState: function() {
+      return window.__container__;
+    },
+
+  };
+
+</script>
