@@ -51,7 +51,7 @@
           <div class="controls">
             <paper-icon-button 
               on-tap = "toggleFavorite"
-              icon   = "star"
+              icon   = "[[_favoriteIcon(favorite)]]"
               class  = "star">
             </paper-icon-button>
             <paper-icon-button 
@@ -78,7 +78,18 @@
 
       is: 'poly-message-list-item',
 
+      properties: {
+        favorite: {
+          type: Boolean,
+          value: false,
+        },
+      },
+
       toggleFavorite: function() {
+      },
+
+      _favoriteIcon: function(favorite) {
+        return favorite ? 'star' : 'star-border';
       },
 
       behaviors: [

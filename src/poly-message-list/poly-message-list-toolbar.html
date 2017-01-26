@@ -97,7 +97,7 @@
             <span style="color: #cacaca;">No messages selected</span>
           </template>
           <template is="dom-if" if="[[hasSelection]]">
-            [[_selectionText(selectionSize)]] 
+            <b>[[selectionSize]]</b> [[_selectionText(selectionSize)]] 
           </template>
         </div>
         <paper-button on-tap="handleSelectAll">
@@ -151,9 +151,9 @@
 
       _selectionText: function(size) {
         if (1 == size) {
-          return size + ' message selected';
+          return ' message selected';
         } else {
-          return size + ' messages selected';
+          return ' messages selected';
         }
       },
 

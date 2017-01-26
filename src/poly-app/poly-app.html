@@ -147,13 +147,13 @@
             });
             var state = this.getState();
             state.set('state.messages.unread', inbox.length);
-            state.set('state.messages.inbox', inbox);
-            state.set('state.messages.outbox', outbox);
+            state.set('state.messages.inbox', inbox.reverse());
+            state.set('state.messages.outbox', outbox.reverse());
             break;
           case 'inboxUpdate':
-            break;
+            //break;
           case 'channelUpdate':
-            break;
+            //break;
           default:
             console.warn('Unhandled message type: ' + payload.event);
         }
