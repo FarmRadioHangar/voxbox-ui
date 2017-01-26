@@ -69,6 +69,7 @@
       on-select-all   = "handleSelectAll"
       on-unselect-all = "handleUnselectAll"
       has-selection   = "[[hasSelection]]"
+      selection-size  = "[[selectionSize]]"
       grid-mode       = "{{gridMode}}"
       incoming>
     </poly-message-list-toolbar>
@@ -79,7 +80,7 @@
         id                  = "message-grid"
         items               = "[[items]]"
         selected-items      = "{{gridSelectedItems}}"
-        on-scroll = "onScroll"
+        on-scroll           = "onScroll"
         selection-enabled 
         multi-selection
         grid>
@@ -88,6 +89,7 @@
           <div class="grid-item">
             <poly-message-grid-item 
               item               = "[[item]]"
+              message-id         = "[[item.id]]"
               index              = "[[index]]"
               selected           = "[[selected]]"
               on-actions-tap     = "showActions"
@@ -102,6 +104,7 @@
         id             = "message-list"
         items          = "[[items]]"
         selected-items = "{{listSelectedItems}}"
+        on-scroll      = "onScroll"
         selection-enabled 
         multi-selection>
 
@@ -109,6 +112,7 @@
           <div class="list-item">
             <poly-message-list-item 
               item               = "[[item]]"
+              message-id         = "[[item.id]]"
               index              = "[[index]]"
               selected           = "[[selected]]"
               on-actions-tap     = "showActions"
@@ -121,7 +125,7 @@
 
     </iron-pages>
 
-    <paper-fab on-tap="hello" icon="hardware:keyboard-arrow-down"></paper-fab>
+    <paper-fab on-tap="scrollToLast" icon="hardware:keyboard-arrow-down"></paper-fab>
 
     <content></content>
 
@@ -132,21 +136,17 @@
 
       is: 'poly-message-inbox',
 
-      ready: function() {
-        console.log(this.messageHandler);
-      },
-
       properties: {
         items: {
           type: Array,
           value: [],
           statePath: 'state.messages.inbox',
         },
-//        items: {
-//          type: Array,
-////          value: [],
-//          statePath: 'messages.inbox',
-//        },
+        freshold: {
+          type: Number,
+          value: 0,
+          statePath: 'state.messages.freshold',
+        },
         listSelectedItems: {
           type: Object,
         },
@@ -161,6 +161,10 @@
           type: Boolean,
           value: false
         },
+        selectionSize: {
+          type: Number,
+          value: 0,
+        },
       },
 
       observers: [
@@ -171,6 +175,7 @@
       selectedItemsChanged: function() {
         var items = this.gridMode ? this.gridSelectedItems : this.listSelectedItems;
         this.hasSelection = (items.length > 0);
+        this.selectionSize = items.length;
       },
 
       handleToggleSelected: function(event) {
@@ -207,33 +212,17 @@
         this.$.actions.open();
       },
 
-      hello: function() {
-        this.getState().push('state.messages', {"timestamp":"1480968424703","type":"sms_in","endpoint":"0756502265","channel_id":"vodacom1","content":"waaaaaaaaaaaaaaaaaaaaaap"});
-
-        //this.push('items', {
-        //  channel_id: "airtel1",
-        //  content: "What!!!",
-        //  endpoint: "0678647268",
-        //  timestamp: "1484301770577",
-        //  type: "sms_in",
-        //});
-        //this.dispatch({
-        //  type: 'INBOX_UPDATE',
-        //  data: {
-        //    "xxx": {
-        //      channel_id: "airtel1",
-        //      content: "What!!!",
-        //      endpoint: "0678647268",
-        //      timestamp: "1484301770577",
-        //      type: "sms_in",
-        //    }
-        //  }
-        //});
+      scrollToLast: function() {
+        var items = this.getListComponent().items;
+        this.getListComponent().scrollToIndex(items.length - 1);
       },
 
       onScroll: function(event) {
-        //console.log('onScroll');
-        //console.log(event);
+        var lastVisible = this.getListComponent().lastVisibleIndex;
+        if (lastVisible > this.freshold) {
+          this.getState().set('state.messages.freshold', lastVisible);
+          this.getState().set('state.messages.unread', this.items.length - lastVisible - 1);
+        }
       },
 
       behaviors: [

@@ -6,6 +6,7 @@
 <link rel="import" href="../../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../poly-tab/poly-tab.html">
+<link rel="import" href="../state-container.html">
 
 <dom-module id="poly-header">
   <template>
@@ -73,7 +74,9 @@
       </paper-tab>
       <paper-tab>
         <poly-tab label="SMS INBOX" icon="move-to-inbox"></poly-tab>
-        <paper-badge for="number" label="4"></paper-badge>
+        <template is="dom-if" if="[[_hasUnread(unread)]]">
+          <paper-badge for="number" label="[[unread]]"></paper-badge>
+        </template>
       </paper-tab>
       <paper-tab>
         <poly-tab label="SENT SMS" icon="poly:outbox"></poly-tab>
@@ -109,7 +112,19 @@
           type: Boolean,
           value: true,
         },
+        unread: {
+          type: Number,
+          statePath: 'state.messages.unread',
+        },
       },
+
+      _hasUnread: function(unread) {
+        return unread > 0;
+      },
+
+      behaviors: [
+        ReceiverBehavior,
+      ],
 
     });
   </script>

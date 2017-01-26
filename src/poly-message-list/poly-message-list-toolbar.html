@@ -25,6 +25,23 @@
         background-color: #dddddd; 
       }
 
+      .message-actions {
+        margin-left: 10px; 
+        flex: 2; 
+        display: flex; 
+        flex-direction: row; 
+        align-items: center;
+      }
+
+      .tools {
+        margin-right: 10px; 
+        flex: 2; 
+        display: flex; 
+        flex-direction: row; 
+        align-items: center; 
+        justify-content: flex-end;
+      }
+
       paper-button {
         color: rgb(0, 188, 212);
       }
@@ -56,7 +73,7 @@
     </style>
 
     <div class="container">
-      <div style="margin-left: 10px; flex: 2; display: flex; flex-direction: row; align-items: center;">
+      <div class="message-actions">
         <paper-button disabled="[[!hasSelection]]">
           <iron-icon icon="delete" style="margin-right: 5px;"></iron-icon>
           Delete
@@ -74,7 +91,15 @@
           <paper-checkbox checked="" style="margin-left: 20px;">Only show starred</paper-checkbox>
         </template>
       </div>
-      <div style="margin-right: 10px; flex: 1; display: flex; flex-direction: row; align-items: center; justify-content: flex-end;">
+      <div class="tools">
+        <div style="margin: 0 10px;">
+          <template is="dom-if" if="[[!hasSelection]]">
+            <span style="color: #cacaca;">No messages selected</span>
+          </template>
+          <template is="dom-if" if="[[hasSelection]]">
+            [[_selectionText(selectionSize)]] 
+          </template>
+        </div>
         <paper-button on-tap="handleSelectAll">
           <iron-icon icon="check" style="margin-right: 5px;"></iron-icon>
           Select all
@@ -85,7 +110,12 @@
         </paper-button>
         <template is="dom-if" if="[[incoming]]">
           <div class="divider" style="margin-left: 10px;"></div>
-          <paper-icon-button style="margin-left: 7px;" active="{{gridMode}}" toggles="true" icon="[[_gridButtonIcon(gridMode)]]"></paper-icon-button>
+          <paper-icon-button 
+            style   = "margin-left: 7px;"
+            active  = "{{gridMode}}"
+            toggles = "true"
+            icon    = "[[_gridButtonIcon(gridMode)]]">
+          </paper-icon-button>
         </template>
       </div>
     </div>
@@ -101,6 +131,10 @@
         hasSelection: {
           type: Boolean,
         },
+        selectionSize: {
+          type: Number,
+          value: 0,
+        },
         gridMode: {
           type: Boolean,
           notify: true,
@@ -113,6 +147,14 @@
 
       _gridButtonIcon: function(gridMode) {
         return gridMode ? 'view-module' : 'view-list'; 
+      },
+
+      _selectionText: function(size) {
+        if (1 == size) {
+          return size + ' message selected';
+        } else {
+          return size + ' messages selected';
+        }
       },
 
       handleSelectAll: function() {

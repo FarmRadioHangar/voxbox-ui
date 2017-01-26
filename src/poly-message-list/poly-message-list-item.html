@@ -5,6 +5,7 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="poly-message-item-styles.html">
 <link rel="import" href="poly-message-behavior.html">
+<link rel="import" href="../state-container.html">
 
 <dom-module id="poly-message-list-item">
   <template>
@@ -49,7 +50,7 @@
 
           <div class="controls">
             <paper-icon-button 
-              on-tap = "toggleFavorite()"
+              on-tap = "toggleFavorite"
               icon   = "star"
               class  = "star">
             </paper-icon-button>

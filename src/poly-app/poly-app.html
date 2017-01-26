@@ -67,12 +67,12 @@
             </poly-channel-list>
           </neon-animatable>
           <neon-animatable>
-            <poly-message-inbox id="inbox">
+            <poly-message-inbox>
               <paper-fab on-tap="openNewMessageDialog" icon="communication:message"></paper-fab>
             </poly-message-inbox>
           </neon-animatable>
           <neon-animatable>
-            <poly-message-outbox id="outbox">
+            <poly-message-outbox>
             </poly-message-outbox>
           </neon-animatable>
           <neon-animatable>
@@ -146,6 +146,7 @@
               }
             });
             var state = this.getState();
+            state.set('state.messages.unread', inbox.length);
             state.set('state.messages.inbox', inbox);
             state.set('state.messages.outbox', outbox);
             break;
@@ -182,6 +183,8 @@
             messages: {
               inbox: [],
               outbox: [],
+              freshold: 0,  /* freshness threshold */
+              unread: 0,
             },
           },
         },

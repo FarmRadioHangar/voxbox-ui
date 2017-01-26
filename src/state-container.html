@@ -69,6 +69,10 @@
       return window.__container__;
     },
 
+    send: function(message) {
+      window.__socket__.send(message);
+    },
+
   };
 
 </script>
