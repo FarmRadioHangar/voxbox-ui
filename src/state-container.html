@@ -15,7 +15,7 @@
       var value = changeRecord.value;
       this.watchers.forEach(function(watcher) {
         if (changeRecord.path === watcher.path) {
-          watcher.component.set(watcher.property, changeRecord.value);
+          watcher.component.set(watcher.property, deepClone(changeRecord.value));
         } else if (changeRecord.path.startsWith(watcher.path) && changeRecord.path.endsWith('.splices')) {
           value.indexSplices.forEach(function(splice) {
             var items = [];
@@ -54,11 +54,11 @@
         if (property.statePath) {
           var obj = window.__container__.get(property.statePath);
           if (obj) {
-            component.set(name, JSON.parse(JSON.stringify(obj)));
+            component.set(name, deepClone(obj));
           }
           window.__container__.watch(component, name, property.statePath);
         }
-      });
+      }, this);
     },
 
     detached: function() {
@@ -74,5 +74,9 @@
     },
 
   };
+
+  function deepClone(obj) {
+    return JSON.parse(JSON.stringify(obj));
+  }
 
 </script>
