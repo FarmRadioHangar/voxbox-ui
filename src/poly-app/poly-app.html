@@ -9,6 +9,7 @@
 <link rel="import" href="../../bower_components/neon-animation/neon-animatable.html">
 <link rel="import" href="../../bower_components/neon-animation/neon-animated-pages.html">
 <link rel="import" href="../../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../poly-add-contact-dialog/poly-add-contact-dialog.html">
 <link rel="import" href="../poly-channel-list/poly-channel-list.html">
@@ -96,6 +97,9 @@
   </template>
 
   <script>
+    function truncated(str) {
+      return (str.length > 60) ? str.substring(0, 60) + '…' : str;
+    };
     Polymer({
 
       is: 'poly-app',
@@ -111,7 +115,7 @@
           data: {
             filter: [], 
             after_id: null,
-            count: null,
+            count: 1000,
           }
         });
       },
@@ -136,10 +140,11 @@
             var ids = payload.data.ids,
                 inbox  = [],
                 outbox = [];
+            console.log(ids.length);
             ids.forEach(function(id) {
               var message = messages[id];
               message.id = id;
-              if ('sms_in' === message.type) {
+              if ('sms_in' == message.type) {
                 inbox.push(message);
               } else {
                 outbox.push(message);
@@ -151,11 +156,28 @@
             state.set('state.messages.outbox', outbox.reverse());
             break;
           case 'inboxUpdate':
-            //break;
+            var unread = this.state.messages.unread;
+            Object.keys(payload.data).forEach(function(id) {
+              var message = payload.data[id];
+              message.id = id;
+              var toast = document.createElement('paper-toast');
+              toast.text = 'New message from ' + message.endpoint + ': ' + truncated(message.content);
+              document.body.appendChild(toast); 
+              toast.show();
+              if ('sms_in' == message.type) {
+                this.getState().push('state.messages.inbox', message);
+                unread++;
+              } else {
+                this.getState().push('state.messages.outbox', message);
+              }
+            }, this);
+            this.set('state.messages.unread', unread);
+            break;
           case 'channelUpdate':
             //break;
           default:
             console.warn('Unhandled message type: ' + payload.event);
+            console.log(payload);
         }
       },
 
