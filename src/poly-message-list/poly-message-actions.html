@@ -1,6 +1,7 @@
 <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
 <dom-module id="poly-message-actions">
@@ -8,38 +9,80 @@
 
     <style>
 
-      :host {
+      paper-dialog {
+        width: 700px;
       }
 
       iron-icon {
         color: rgb(0, 188, 212);
+        margin-right: 5px;
       }
 
       paper-button {
         color: rgb(0, 188, 212);
-        --paper-button: {
-          @apply(--layout-vertical);
-          @apply(--layout-center-center);
-        };
+      }
+
+      .buttons {
+        margin: 0 130px; 
+        padding: 8px;
+        justify-content: space-around;
+      }
+
+      .message-container {
+        display: flex; 
+        flex-direction: row; 
+        min-height: 160px; 
+        border-bottom: 1px solid #dddddd;
+      }
+
+      .message-container .nav {
+        align-self: center;
       }
 
     </style>
 
     <paper-dialog with-backdrop id="dialog">
-      <div class="buttons" style="padding-left: 8px;">
+
+      <div class="message-container">
+
+        <div class="nav" style="margin-right: 20px;">
+          <paper-icon-button
+            on-tap = "_showPrevious"
+            icon   = "icons:chevron-left">
+          </paper-icon-button>
+        </div>
+
+        <div style="flex: 2;">
+          <p>
+            <b>From:</b> [[sender]]<br />
+            <b>Sent:</b> [[_formatDate(timestamp)]]
+          </p>
+          <p>
+            [[content]]
+          </p>
+        </div>
+
+        <div class="nav" style="margin-left: 20px;">
+          <paper-icon-button 
+            on-tap = "_showNext"
+            icon   = "icons:chevron-right">
+          </paper-icon-button>
+        </div>
+
+      </div>
+
+      <div class="buttons">
         <paper-button>
-          <iron-icon icon="delete" style="margin-bottom: 6px;"></iron-icon>
-          Delete
+          <iron-icon icon="delete"></iron-icon>Delete
         </paper-button>
         <paper-button>
-          <iron-icon icon="reply" style="margin-bottom: 6px;"></iron-icon>
-          Reply
+          <iron-icon icon="reply"></iron-icon>Reply
         </paper-button>
         <paper-button>
-          <iron-icon icon="communication:call" style="margin-bottom: 6px;"></iron-icon>
-          Call number
+          <iron-icon icon="communication:call"></iron-icon>Call number
         </paper-button>
       </div>
+
     </paper-dialog>
 
   </template>
@@ -49,11 +92,37 @@
 
       is: 'poly-message-actions',
 
+      properties: {
+        content: {
+          type: String,
+          value: '',
+        },
+        endpoint: {
+          type: String,
+          value: '',
+        },
+        timestamp: {
+          type: String,
+          value: '',
+        },
+      },
+
       open: function() {
         this.$.dialog.open();
+      },
+
+      _showNext: function() {
+        this.fire('next');
+      },
+
+      _showPrevious: function() {
+        this.fire('prev');
+      },
+
+      _formatDate: function(stamp) {
+        return moment(Number(stamp)).format("ddd, MMM Do YYYY, h:mm:ss a"); 
       },
 
     });
   </script>
 </dom-module>
-
