@@ -3,9 +3,9 @@
 <link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="poly-message-item-styles.html">
-<link rel="import" href="poly-message-behavior.html">
 <link rel="import" href="../state-container.html">
+<link rel="import" href="poly-message-behavior.html">
+<link rel="import" href="poly-message-item-styles.html">
 
 <dom-module id="poly-message-list-item">
   <template>
@@ -15,9 +15,8 @@
     <style>
 
       paper-material {
-        width: 800px;
-        height: 160px;
-        margin: 10px auto;
+        width: 700px;
+        margin: 4px auto;
       }
 
       .bar {
@@ -41,7 +40,7 @@
         <div class="bar">
 
           <div class="meta">
-            <paper-checkbox on-tap="toggleSelected" checked="[[selected]]"></paper-checkbox>
+            <paper-checkbox on-tap="_toggleSelected" checked="[[selected]]"></paper-checkbox>
             <paper-item-body>
               <div secondary class="date"><span>[[formatDate(item.timestamp)]]</span></div>
               <div>[[item.endpoint]]</div>
@@ -50,25 +49,25 @@
 
           <div class="controls">
             <paper-icon-button 
-              on-tap = "toggleFavorite"
-              icon   = "[[_favoriteIcon(favorite)]]"
+              on-tap = "_toggleFavorite"
+              icon   = "[[_favIcon(favorite)]]"
               class  = "star">
             </paper-icon-button>
             <paper-icon-button 
-              on-tap = "showMessageActions"
-              icon   = "more-vert">
+              on-tap = "_showMessageActions"
+              icon   = "more-horiz">
             </paper-icon-button>
           </div>
 
         </div>
 
-        <paper-item-body class="content">
-          <div secondary style="white-space: normal;">
+        <div class="content" style="margin-bottom: 16px;"> 
+          <div secondary style="white-space: normal; padding: 0 10px;">
             [[item.content]]
           </div>
-        </paper-item-body>
-        
-      </div>
+        </div>
+
+     </div>
     </paper-material>
 
   </template>
@@ -83,13 +82,6 @@
           type: Boolean,
           value: false,
         },
-      },
-
-      toggleFavorite: function() {
-      },
-
-      _favoriteIcon: function(favorite) {
-        return favorite ? 'star' : 'star-border';
       },
 
       behaviors: [

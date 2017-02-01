@@ -3,41 +3,51 @@
 <link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="../../bower_components/paper-material/paper-material.html">
 <link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="poly-message-item-styles.html">
-<link rel="import" href="poly-message-behavior.html">
 <link rel="import" href="../state-container.html">
+<link rel="import" href="poly-message-behavior.html">
+<link rel="import" href="poly-message-item-styles.html">
 
 <dom-module id="poly-message-grid-item">
   <template>
 
-    <style include="message-item-styles"></style>
+    <style include="message-item-styles">
+
+      paper-material {
+        height: 210px;
+      }
+
+      .content {
+        height: 100px;
+      }
+
+    </style>
 
     <paper-material>
       <div class="item">
 
         <div class="meta">
-          <paper-checkbox on-tap="toggleSelected" checked="[[selected]]"></paper-checkbox>
+          <paper-checkbox on-tap="_toggleSelected" checked="[[selected]]"></paper-checkbox>
           <paper-item-body>
             <div secondary class="date"><span>[[formatDate(item.timestamp)]]</span></div>
             <div>[[item.endpoint]]</div>
           </paper-item-body>
         </div>
 
-        <paper-item-body class="content">
+        <div class="content">
           <div secondary style="white-space: normal;">
-            [[item.content]]
+            [[_truncated(item.content)]]
           </div>
-        </paper-item-body>
+        </div>
 
         <div class="controls">
           <paper-icon-button 
-            on-tap = "toggleFavorite"
-            icon   = "[[_favoriteIcon(favorite)]]"
+            on-tap = "_toggleFavorite"
+            icon   = "[[_favIcon(favorite)]]"
             class  = "star">
           </paper-icon-button>
           <paper-icon-button 
-            on-tap = "showMessageActions"
-            icon   = "more-vert">
+            on-tap = "_showMessageActions"
+            icon   = "more-horiz">
           </paper-icon-button>
         </div>
         
@@ -47,6 +57,9 @@
   </template>
 
   <script>
+
+    var MAX_MESSAGE_LENGTH = 130;
+
     Polymer({
 
       is: 'poly-message-grid-item',
@@ -58,15 +71,10 @@
         },
       },
 
-      toggleFavorite: function() {
-        this.send({
-          event: 'messageFavoriteSet',
-          data: [this.messageId],
-        });
-      },
-
-      _favoriteIcon: function(favorite) {
-        return favorite ? 'star' : 'star-border';
+      _truncated: function(content) {
+        return (content.length > MAX_MESSAGE_LENGTH) 
+          ? content.substring(0, MAX_MESSAGE_LENGTH) + '…' 
+          : content;
       },
 
       behaviors: [
@@ -75,5 +83,6 @@
       ],
 
     });
+
   </script>
 </dom-module>
