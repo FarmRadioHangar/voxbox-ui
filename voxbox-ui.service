@@ -5,7 +5,7 @@ After=run-user-0.mount
 [Service]
 ExecStart=/usr/local/bin/polymer serve -H 0.0.0.0 -p 8999
 Restart=always
-WorkingDirectory=/home/fri/voxbox-polymer-frontend
+WorkingDirectory=/home/fri/voxbox-ui
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=fconf-polymer
