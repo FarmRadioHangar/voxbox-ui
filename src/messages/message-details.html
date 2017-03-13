@@ -1,0 +1,210 @@
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="confirm-delete-dialog.html">
+<link rel="import" href="message-compose-dialog.html">
+
+<dom-module id="message-details">
+  <template>
+    <style include="iron-flex iron-flex-alignment"></style>
+    <style>
+
+      paper-dialog {
+        width: 450px;
+      }
+
+      paper-button {
+        color: rgb(0, 188, 212);
+      }
+
+      .message-container {
+        @apply(--layout-horizontal);
+      }
+
+      .message-container .nav {
+        align-self: center;
+      }
+
+      .message-container .nav:first-child {
+        margin-right: 20px;
+      }
+
+      .message-container .nav:last-child {
+        margin-left: 20px;
+      }
+
+      .message-content {
+        flex: 2;
+        font-size: 15px;
+        line-height: 1.5;
+        min-height: 200px;
+        overflow: hidden;
+        word-wrap: break-word;
+      }
+
+      .buttons {
+        justify-content: flex-start;
+        margin-bottom: 12px;
+      }
+
+    </style>
+    <call-dialog
+      id                  = "call-dialog"
+      on-confirmed        = "_handleCall"
+      channels            = "[[channels]]">
+    </call-dialog>
+    <message-compose-dialog
+      id                  = "message-compose-dialog"
+      on-confirmed        = "onMessageComposeConfirmed"
+      channels            = "[[channels]]">
+    </message-compose-dialog>
+    <confirm-delete-dialog 
+      id                  = "confirm-delete-dialog" 
+      on-delete-confirmed = "onDeleteConfirmed"
+      selection-size      = "1">
+    </confirm-delete-dialog>
+    <paper-dialog 
+      on-keydown          = "_handleKeyEvent"
+      id                  = "dialog"
+      with-backdrop>
+      <div>
+        <div class="message-container">
+          <div class = "nav">
+            <paper-icon-button
+              on-tap      = "_showPrevious"
+              icon        = "icons:chevron-left">
+            </paper-icon-button>
+          </div>
+          <div class="message-content">
+            <p>
+              <b>From:</b> [[sender]]<br />
+              <b>Sent:</b> [[_formatDate(timestamp)]]
+            </p>
+            <p>
+              [[content]]
+            </p>
+          </div>
+          <div class="nav">
+            <paper-icon-button 
+              on-tap      = "_showNext"
+              icon        = "icons:chevron-right">
+            </paper-icon-button>
+          </div>
+        </div>
+      </div>
+      <div class="buttons">
+        <paper-button on-tap="_confirmDeleteMessage">Delete</paper-button>
+        <paper-button on-tap="_replyMessage">Reply</paper-button>
+        <paper-button on-tap="_openCallDialog">Call number</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+  <script>
+    Polymer({
+
+      is: 'message-details',
+
+      properties: {
+        index: {
+          type: Number,
+          value: 0,
+        },
+        content: {
+          type: String,
+          value: '',
+        },
+        sender: {
+          type: String,
+          value: '',
+        },
+        timestamp: {
+          type: String,
+          value: '',
+        },
+      },
+
+      open: function() {
+        this.$.dialog.open();
+      },
+
+      close: function() {
+        this.$.dialog.close();
+      },
+
+      onDeleteConfirmed: function() {
+        this.fire('delete-item', this.index);
+      },
+      
+      onMessageComposeConfirmed: function() {
+        var dialog = this.$['message-compose-dialog'];
+        this.fire('sms-out', {
+          endpoint: dialog.number,
+          content: dialog.message,
+          channel_id: ('__auto__' === dialog.channel ? null : dialog.channel),
+        });
+        this.close();
+      },
+
+      _handleKeyEvent: function(e) {
+        if (e.keyCode === 37) {
+          this._showPrevious();
+        } else if (e.keyCode === 39) {
+          this._showNext();
+        }
+      },
+
+      _showNext: function() {
+        this.fire('next');
+      },
+
+      _showPrevious: function() {
+        this.fire('prev');
+      },
+
+      _openCallDialog: function() {
+        var dialog = this.$['call-dialog'];
+        Polymer.dom(document.querySelector('body')).appendChild(dialog);
+        dialog.open();
+        dialog.number = this.sender;
+      },
+
+      _handleCall: function() {
+        var dialog = this.$['call-dialog'];
+        this.fire('message', {
+          event: 'callNumber',
+          data: {
+            number: dialog.number,
+            mode: 'master',
+            channel_id: ('__auto__' === dialog.channel ? null : dialog.channel),
+          },
+        });
+        this.close();
+        var toast = document.createElement('paper-toast');
+        toast.text = 'Calling ' + dialog.number;             
+        document.body.appendChild(toast); 
+        toast.show();
+      },
+
+      _confirmDeleteMessage: function() {
+        var dialog = this.$['confirm-delete-dialog'];
+        Polymer.dom(document.querySelector('body')).appendChild(dialog);
+        dialog.open();
+      },
+
+      _replyMessage: function() {
+        var dialog = this.$['message-compose-dialog'];
+        Polymer.dom(document.querySelector('body')).appendChild(dialog);
+        dialog.open();
+        dialog.number = this.sender;
+      },
+
+      _formatDate: function(stamp) {
+        return moment(Number(stamp)).format("ddd, MMM Do YYYY, h:mm:ss a"); 
+      },
+
+    });
+  </script>
+</dom-module>

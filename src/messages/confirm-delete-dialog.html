@@ -1,0 +1,84 @@
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="confirm-delete-dialog">
+  <template>
+    <style>
+
+      paper-button {
+        color: rgb(0, 188, 212);
+      }
+
+    </style>
+    <paper-dialog 
+      id                     = "dialog" 
+      style                  = "width: 550px;" 
+      on-iron-overlay-closed = "onClosed"
+      modal>
+      <h2>Confirm delete</h2>
+      <div>Are you sure you want to delete [[_msgLabel(selectionSize)]]?</div>
+      <div class="buttons">
+        <paper-button dialog-dismiss>Cancel</paper-button>
+        <paper-button dialog-confirm>Delete</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+  <script>
+
+    Polymer({
+
+      is: 'confirm-delete-dialog',
+
+      properties: {
+        selectionSize: {
+          type: Number,
+          value: 0,
+        },
+      },
+
+      open: function() {
+        this.$.dialog.open();
+      },
+
+      close: function() {
+        this.$.dialog.close();
+      },
+
+      _msgLabel: function(selection) {
+        switch (selection) {
+          case 2:
+            selection = 'two';
+            break;
+          case 3:
+            selection = 'three';
+            break;
+          case 4:
+            selection = 'four';
+            break;
+          case 5:
+            selection = 'five';
+            break;
+          case 6:
+            selection = 'six';
+            break;
+          case 7:
+            selection = 'seven';
+            break;
+          case 8:
+            selection = 'eight';
+            break;
+        }
+        return 1 == selection ? 'this message' : ('the ' + selection + ' selected messages');
+      },
+
+      onClosed: function(event) {
+        if (event.detail.confirmed) {
+          this.fire('delete-confirmed');
+        }
+      },
+
+    });
+
+  </script>
+</dom-module>

@@ -1,0 +1,464 @@
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-storage/app-network-status-behavior.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-icons/av-icons.html">
+<link rel="import" href="../bower_components/iron-icons/communication-icons.html">
+<link rel="import" href="../bower_components/iron-icons/hardware-icons.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-iconset/iron-iconset.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/paper-badge/paper-badge.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="box/connection-monitor.html">
+<link rel="import" href="box/message-handler.html">
+<link rel="import" href="channels/channel-list.html">
+<link rel="import" href="error-dialog.html">
+<link rel="import" href="messages/message-inbox.html">
+<link rel="import" href="messages/message-outbox.html">
+
+<dom-module id="message-app">
+  <template>
+    <style include="iron-flex"></style>
+    <style>
+
+      app-toolbar {
+        background-color: #1a88ae;
+        color: white;
+        font-weight: lighter;
+        --app-toolbar-font-size: 24px;
+        height: 45px;
+      }
+
+      paper-tabs {
+        background-color: rgb(0, 188, 212); 
+        color: #fff;
+        width: 100vw;
+        height: 68px;
+        --paper-tabs-selection-bar-color: var(--paper-pink-a200); 
+      }
+
+      paper-tab {
+        --paper-tab-ink: rgba(255, 255, 255, 0.7);
+      }
+
+      paper-badge {
+        margin-left: 41px;
+        margin-top: -53px;
+        position: absolute;
+      }
+
+      iron-pages {
+        height: 100%;
+        overflow-x: hidden;
+      }
+
+      iron-icon, label {
+        padding: 2px;
+        margin-top: -2px;
+      }
+
+      label {
+        text-transform: uppercase;
+      }
+
+      paper-spinner {
+        width: 62px;
+        height: 62px;
+      }
+
+      .spinner-container {
+        width: 100vw; 
+        height: 100vh; 
+        display: flex; 
+        position: absolute;
+        overflow: hidden;
+        justify-content: center; 
+        align-items: center;
+      }
+
+      p.nope {
+        text-align: center; 
+        margin: 30px 0;
+      }
+
+    </style>
+    <message-handler 
+      id                  = "message-handler"
+      on-open             = "handleConnectionOpened"
+      on-close            = "handleConnectionClosed"
+      on-message          = "handleMessage"
+      on-error            = "handleError">
+    </message-handler>
+    <connection-monitor
+      id                  = "monitor"
+      connected           = "{{boxConnected}}"
+      on-connected        = "onConnected"
+      on-disconnected     = "onDisconnected"
+      on-message          = "sendMessage"
+      debug               = "[[debug]]">
+    </connection-monitor>
+    <error-dialog
+      id                  = "error-dialog">
+    </error-dialog>
+    <iron-iconset-svg name="custom" size="24">
+      <svg>
+        <defs>
+          <g id="outbox">
+            <path fill="#ffffff" d="M14,14H10V11H8L12,7L16,11H14V14M16,11M5,15V5H19V15H15A3,3 0 0,1 12,18A3,3 0 0,1 9,15H5M19,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3" />
+          </g>
+        </defs>
+      </svg>
+    </iron-iconset-svg>
+    <error-dialog
+      opened              = "[[!online]]"
+      title               = "Network unavailable"
+      message             = "Please check your network connection.">
+    </error-dialog>
+    <error-dialog
+      opened              = "[[_boxUnavailable(hasInitialized, online, boxConnected)]]"
+      title               = "The Voxbox is not responding">
+      <p class="nope">
+        <img src="[[_nope(boxConnected)]]" style="max-height: 240px;" /> 
+      </p>
+      <p style="margin-bottom: 30px;">
+        Please follow the troubleshooting steps in your user manual. If the problem persists, contact the technical support team at Farm Radio for assistance.
+      </p>
+    </error-dialog>
+    <div class="spinner-container">
+      <paper-spinner active="[[_spinnerVisible(hasInitialized)]]"></paper-spinner>
+    </div>
+    <app-header-layout hidden$="[[_uiHidden(hasInitialized, online, boxConnected)]]" fullbleed>
+      <app-header fixed>
+        <app-toolbar>
+          <div main-title>
+            <!-- http://fontmeme.com/fonts/young-frankenstein-font/ 28 -->
+            <img src="/images/voxbox.png" style="margin-top: 6px;" />
+            <span style="font-size: 11px; float: right; margin-top: 24px; font-weight: bold; opacity: 0.5;">0.0.1(box) 0.3.0(client)</span>
+          </div>
+        </app-toolbar>
+        <paper-tabs selected="{{tab}}">
+          <paper-tab>
+            <div class="layout vertical center">
+              <iron-icon icon="av:volume-up"></iron-icon>
+              <label>Mixer</label>
+            </div>
+          </paper-tab>
+          <paper-tab>
+            <div class="layout vertical center">
+              <iron-icon icon="communication:message"></iron-icon>
+              <label>SMS Inbox
+                <paper-badge 
+                  for     = "number"
+                  hidden$ = "[[!unread]]"
+                  label   = "[[unread]]">
+                </paper-badge>
+              </label>
+            </div>
+          </paper-tab>
+          <paper-tab>
+            <div class="layout vertical center">
+              <iron-icon icon="custom:outbox"></iron-icon>
+              <label>Sent SMS</label>
+            </div>
+          </paper-tab>
+        </paper-tabs>
+      </app-header>
+      <iron-pages 
+        selected          = "[[tab]]">
+        <channel-list
+          on-message      = "sendMessage"
+          channels        = "[[visibleChannels]]">
+        </channel-list>
+        <message-inbox 
+          id              = "inbox"
+          on-message      = "sendMessage"
+          unread          = "{{unread}}"
+          messages        = "[[inbox]]"
+          channels        = "[[activeChannels]]">
+        </message-inbox>
+        <message-outbox
+          id              = "outbox"
+          on-message      = "sendMessage"
+          messages        = "[[outbox]]"
+          channels        = "[[activeChannels]]">
+        </message-outbox>
+      </iron-pages>
+    </app-header-layout>
+  </template>
+  <script>
+
+    Polymer({
+
+      is: 'message-app',
+
+      properties: {
+        tab: {
+          type: Number,
+          value: 0,
+          notify: true,
+          observer: '_tabChanged',
+        },
+        inbox: {
+          type: Array,
+          value: [],
+        },
+        outbox: {
+          type: Array,
+          value: [],
+        },
+        channels: {
+          type: Object,
+          value: {},
+        },
+        visibleChannels: {
+          type: Array,
+          computed: '_computedChannels(channels, channels.*)',
+        },
+        activeChannels: {
+          type: Array,
+          computed: '_activeChannels(visibleChannels, visibleChannels.*)',
+        },
+        unread: {
+          type: Number,
+          value: 0,
+        },
+        boxConnected: {
+          type: Boolean,
+          value: true,
+        },
+        hasInitialized: {
+          type: Boolean,
+          value: false,
+        },
+        debug: {
+          type: Boolean,
+          value: false,
+        },
+      },
+
+      behaviors: [
+        Polymer.AppNetworkStatusBehavior, 
+      ],
+
+      onConnected: function() {
+        console.log('onConnected');
+      },
+
+      onDisconnected: function() {
+        console.log('onDisconnected');
+        this.$['message-handler'].forceReconnect();
+      },
+
+      ready: function() {
+        window.setTimeout(function() {
+          if (!this.hasInitialized) {
+            this.hasInitialized = true;          // Connection timeout
+          }
+        }.bind(this), 10000);
+        if (this._getURLParameter('debug')) {
+          this.debug = true;
+        }
+      },
+
+      send: function(event, data) {
+        this.$['message-handler'].send({event: event, data: data});
+      },
+
+      handleConnectionOpened: function() {
+        console.log('handleConnectionOpened()');
+      },
+
+      handleConnectionClosed: function() {
+        console.log('handleConnectionClosed()');
+      },
+
+      handleMessage: function(event, payload) {
+        if ('pong' != payload.event) {
+          console.log('<<<<<<<<<<<<<<< (recv)');
+          console.log(payload);
+        }
+        this.$.monitor.pong();
+        switch (payload.event) {
+          case 'inboxMessages':
+            var messages = payload.data.messages;
+            var ids = payload.data.ids, inbox = [], outbox = [];
+            ids.forEach(function(id) {
+              var message = messages[id];
+              message.id = id;
+              if ('sms_in' == message.type) {
+                inbox.push(message);
+              } else {
+                outbox.push(message);
+              }
+            });
+            console.log('in  : ' + inbox.length);
+            console.log('out : ' + outbox.length);
+            this.set('inbox', inbox.reverse());
+            this.set('outbox', outbox.reverse());
+            break;
+          case 'messageSent':
+            var toast = document.createElement('paper-toast');
+            toast.text = 'Message successfully sent.';             
+            document.body.appendChild(toast); 
+            toast.show();
+            break;
+          case 'inboxUpdate':
+            var only = null, count = 0;
+            Object.keys(payload.data).forEach(function(key) {
+              if (payload.data[key]) {
+                var message = payload.data[key];
+                message.id = key;
+                this.push('sms_in' === message.type ? 'inbox' : 'outbox', message);
+                if ('sms_in' === message.type) {
+                  only = 1 == ++count ? message : null;
+                }
+              } else {
+                this.inbox.forEach(function(item) {
+                  if (item.id !== key) return;
+                  var index = this.inbox.indexOf(item);
+                  this.splice('inbox', index, 1);
+                }, this);
+                this.outbox.forEach(function(item) {
+                  if (item.id !== key) return;
+                  var index = this.outbox.indexOf(item);
+                  this.splice('outbox', index, 1);
+                }, this);
+              }
+            }, this);
+            if (count) {
+              var toast = document.createElement('paper-toast');
+              toast.text = only ? 'New message from ' 
+                                + only.endpoint + ': ' 
+                                + this._truncated(only.content, 60)
+                                : count + ' new messages!';
+              document.body.appendChild(toast); 
+              toast.show();
+            }
+            break;
+          case 'initialize':
+            console.log("              .,,,''''''',,\n         .,,,/           ,~~~\\.     /~~~\\     \\   \\\n/     __/               /      \\_'''',,,/     ))  ))\n\\_O--/                  |       \\    __ \",,  //  //\n    |                    /  \\_  /     @)  ''//_ //\n   |                      ',,,/      ~~    //  ~~__\n   |          )             (           __//        ---___ _/OO\n    \\          )     /    )   ( ,,,,   (_Q   '''----_______,_/\n      \\       |--.-- #|   |,,,/\\_   ~~\\/\n        \\____________#| /    \\_ ''\\___\n         /  /    _/  /         ~~\\ __ \\\n        /__/   #|__/                 |##\n        |##    ~~");
+            this.send('inboxFetch', {
+              filter: [], 
+              after_id: null,
+              count: 1000,
+            });
+            this.channels = payload.data.mixer.channels;
+            window.setTimeout(function() {
+              this.hasInitialized = true;
+            }.bind(this), 1000);
+            break;
+          case 'event_error':
+            var dialog = this.$['error-dialog'];
+            dialog.message = payload.data.msg;
+            dialog.canDismiss = true;
+            Polymer.dom(document.querySelector('body')).appendChild(dialog);
+            dialog.open();
+            break;
+          case 'pong':
+            break;
+          case 'channelUpdate':
+            Object.keys(payload.data).forEach(function(key) {
+              var channel = payload.data[key];
+              this.set('channels.' + key, channel);
+              if ('ring' == channel.mode && 'incoming' == channel.direction && channel.contact) {
+                this._showDesktopNotification('Incoming call from ' + channel.contact.number);
+              } 
+            }, this);
+            break;
+          default:
+            console.warn('Unhandled message type: ' + payload.event);
+        }
+      },
+
+      handleError: function() {
+        console.log('handleError()');
+      },
+
+      sendMessage: function(e) {
+        this.$['message-handler'].send(e.detail);
+      },
+
+      _computedChannels: function(channels) {
+        return Object.keys(channels).map(function(id) {
+          var channel = channels[id];
+          channel.id = id;
+          return channel;
+        });
+      },
+
+      _activeChannels: function(channels) {
+        return channels.filter(function(channel) {
+          return 'free' === channel.mode;
+        });
+      },
+
+      _tabChanged: function(tab) {
+        if (1 === tab) {
+          window.setTimeout(function() {
+            var inbox = this.$['inbox'];
+            var last = inbox._getList().lastVisibleIndex;
+            if (isNaN(last) || last < 0) {
+              inbox._getList().scrollToIndex(0);
+              last = inbox._getList().lastVisibleIndex;
+            }
+            inbox._updateScrollIndex();
+            if (last > inbox.freshold) {
+              inbox.freshold = last;
+              inbox._updateLocalStorage();
+            }
+          }.bind(this), 50);
+        }
+      },
+
+      _spinnerVisible: function(hasInitialized) {
+        return !hasInitialized;
+      },
+
+      _uiHidden: function(hasInitialized, online, boxConnected) {
+        var hidden = !online || !hasInitialized;
+        if (!hidden) {
+          this.$['inbox'].updateGeometry();
+        }
+        return hidden;
+      },
+
+      _boxUnavailable: function(hasInitialized, online, boxConnected) {
+        return online && hasInitialized && !boxConnected;
+      },
+
+      _nope: function() {
+        return '/images/giphy/nope' + ((Math.random()*7|0)+1) + '.gif';
+      },
+
+      _truncated: function(str, lim) {
+        return (str.length > lim) ? str.substring(0, lim) + '…' : str;
+      },
+
+      _getURLParameter: function(name) {
+        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
+      },
+
+      _showDesktopNotification: function(message) {
+        if (!('Notification' in window)) {
+          return;
+        } else if (Notification.permission === 'granted') {
+          new Notification(message);
+        } else if (Notification.permission !== 'denied') {
+          Notification.requestPermission(function(permission) {
+            if (permission === 'granted') {
+              new Notification(message);
+            }
+          }.bind(this));
+        }
+      },
+
+    });
+
+  </script>
+</dom-module>

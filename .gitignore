@@ -1,5 +1,2 @@
-node_modules
-bower_components
-npm-debug.log
-build
-.trash
+bower_components/
+.DS_Store

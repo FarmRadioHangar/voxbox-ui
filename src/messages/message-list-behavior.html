@@ -1,0 +1,226 @@
+<script>
+  MessageListBehavior = {
+
+    properties: { 
+      messages: {
+        type: Array,
+        value: [],
+      },
+      selection: {
+        type: Array,
+      },
+      selectionSize: {
+        type: Number,
+        computed: '_computedSelectionSize(selection.*)',
+        notify: true,
+      },
+      hasSelection: {
+        type: Boolean,
+        computed: '_computedHasSelection(selection.*)',
+        notify: true,
+      },
+    },
+
+    onSelectAll: function() {
+      var messages = this.filtered || this.messages;
+      var list = this._getList();
+      this._process(messages, function(item) {
+        list.selectItem(item);
+      }, function() {
+        this._selectAllComplete();
+      });
+    },
+
+    onUnselectAll: function() {
+      this._getList().clearSelection();
+      this.selection = [];
+    },
+
+    onSelectedToggled: function(e) {
+      var list = this._getList();
+      e.model.selected ? list.deselectItem(e.model.index) 
+                       : list.selectItem(e.model.index);
+    },
+
+    onShowDetails: function(e) {
+      var details = this.$.details;
+      Polymer.dom(document.querySelector('body')).appendChild(details);
+      this._updateDialog(details, e.model.item, e.model.index);
+      details.open();
+    },
+
+    onDeleteSelection: function() {
+      var dialog = this.$['confirm-delete-dialog'];
+      Polymer.dom(document.querySelector('body')).appendChild(dialog);
+      dialog.open();
+    },
+
+    onResize: function() {
+      this.updateGeometry();
+    },
+
+    deleteMessage: function(index) {
+      var message = this.messages[index];
+      var data = {};
+      data[message.id] = null;
+      this.splice('messages', index, 1);
+      this.fire('message', {
+        event: 'messageDelete',
+        data: data,
+      });
+    },
+
+    deleteMessageCollection: function(items) {
+      var data = {};
+      items.forEach(function(item) {
+        var index = this.messages.indexOf(item);
+        data[item.id] = null;
+        this.splice('messages', index, 1);
+      }, this);
+      this.fire('message', {
+        event: 'messageDelete',
+        data: data,
+      });
+    },
+
+    showNextMessage: function() {
+      var details = this.$.details;
+      var index = (details.index + 1) % this.messages.length;
+      this._updateDialog(details, this.messages[index], index);
+    },
+
+    showPreviousMessage: function() {
+      var details = this.$.details;
+      var index = (details.index == 0 ? this.messages.length : details.index) - 1;
+      this._updateDialog(details, this.messages[index], index);
+    },
+
+    notifyResize: function() {
+      this._getList().notifyResize();
+    },
+
+    updateGeometry: function() {
+      var list = this._getList();
+      list.style.height = this._calculatedHeight();
+      list.notifyResize();
+    },
+
+    _updateDialog: function(dialog, item, index) {
+      dialog.index = index;
+      dialog.content = item.content;
+      dialog.timestamp = item.timestamp;
+      dialog.sender = item.endpoint;
+    },
+
+    _computedSelectionSize: function() {
+      return this.selection.length;
+    },
+
+    _computedHasSelection: function() {
+      return !!this.selection.length;
+    },
+
+    _calculatedHeight: function() {
+      return (window.innerHeight - this.$.controls.clientHeight - 114) + 'px';
+    },
+
+    _showSpinner: function() {
+      var body = document.querySelector('body');
+      this._spinner = document.createElement('spinner-backdrop');
+      this._spinner.loading = true;
+      this._spinner.customStyle['--spinner-backdrop-overlay-color'] = 'rgba(0,0,0,0.5)';
+      Polymer.dom(body).appendChild(this._spinner);
+    },
+
+    _hideSpinner: function() {
+      if (this._spinner && this._spinner.loading) {
+        this._spinner.loading = false;
+      }
+    },
+
+    _selectAllComplete: function() {},
+
+    _process: function(selection, chunk, done, size) {
+      if (!size) {
+        size = 211;
+      }
+      var i = 0; 
+      var processChunk = function() {
+        var items = selection.slice(i, i + size);
+        items.forEach(chunk, this);
+        i += items.length;
+        if (i < selection.length) {
+          if (!this._spinner || !this._spinner.loading) {
+            this._showSpinner()
+          }
+          window.setTimeout(processChunk, 2);
+        } else {
+          console.log('== process all complete ==');
+          if ('function' === typeof (done)) {
+            done.call(this);
+          }
+          this._hideSpinner();
+        }
+      }.bind(this);
+      if (selection.length) {
+        processChunk();
+      } else {
+        if ('function' === typeof (done)) {
+          done.call(this);
+        }
+      }
+    },
+
+    _handleDeleteConfirmed: function(e) {
+      e.srcElement.close();
+      this.deleteMessage(e.detail);
+      this._showToast('The message was deleted.');
+      if ('function' === typeof(this._afterMessageDelete)) {
+        this._afterMessageDelete(1);
+      }
+    },
+
+    _handleDeleteSelection: function() {
+      var selection = [];
+      this.selection.forEach(function(item) {
+        selection.push(item);
+      }, this);
+      var count = selection.length;
+      this.deleteMessageCollection(selection);
+      this.$.list.clearSelection();
+      if (this.$.grid) { 
+        this.$.grid.clearSelection();
+      }
+      this.selection = [];
+      this._showToast((1 == count ? 'One message' : count + ' messages') + ' deleted.');
+      if ('function' === typeof(this._afterMessageDelete)) {
+        this._afterMessageDelete(count);
+      }
+    },
+
+    _showToast: function(text) {
+      var toast = document.createElement('paper-toast');
+      toast.text = text;
+      document.body.appendChild(toast); 
+      toast.show();
+    },
+
+    _handleSMSOut: function(e) {
+      var message = e.detail;
+      message.type = 'sms_out';
+      this._sendSMS(message);
+    },
+
+    _sendSMS: function(message) {
+      var id = (Date.now()+'').substr(-8) + (++this._messageCount);
+      var payload = {};
+      payload[id] = message;
+      this.fire('message', {
+        event: 'messageSend',
+        data: payload,
+      });
+    },
+
+  };
+</script>
+

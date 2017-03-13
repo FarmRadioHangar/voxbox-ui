@@ -1,6 +1,6 @@
 {
-  "name": "voxbox-polymer-frontend",
-  "short_name": "voxbox-polymer-frontend",
+  "name": "voxbox-polymer-messages",
+  "short_name": "voxbox-polymer-messages",
   "start_url": "/",
   "display": "standalone"
 }

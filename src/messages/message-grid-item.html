@@ -1,0 +1,85 @@
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="message-item-behavior.html">
+<link rel="import" href="message-item-styles.html">
+
+<dom-module id="message-grid-item">
+  <template>
+    <style include="message-item-styles"></style>
+    <style>
+
+      .message-item { 
+        width: 290px;
+        height: 200px; 
+        border: 1px solid #dadada;
+        background: white;
+        margin: 5px 0 0 5px;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+      }
+
+      .controls {
+        align-self: flex-end;
+        padding: 5px;
+      }
+
+      .content {
+        max-height: 80px;
+        padding-top: 0;
+      }
+
+    </style>
+    <div>
+    <div class$="[[_itemClass(selectMode)]]">
+      <div class="layout" style="margin: 0 8px;">
+        <paper-checkbox 
+          on-tap   = "_toggleSelected"
+          checked  = "[[selected]]">
+        </paper-checkbox>
+        <paper-item-body>
+          <div secondary class="date">
+            <span>[[_formatDate(item.timestamp)]]</span>
+          </div>
+          <div>[[item.endpoint]]</div>
+        </paper-item-body>
+      </div>
+      <div class="content">
+        <div>[[_truncated(item.content)]]</div>
+      </div>
+      <div class="controls">
+        <paper-icon-button 
+          class  = "star"
+          on-tap = "_toggleFavorite"
+          icon   = "[[_favoriteButtonIcon(item.favorite)]]">
+        </paper-icon-button>
+        <paper-icon-button 
+          on-tap = "_showMessage"
+          icon   = "unfold-more">
+        </paper-icon-button>
+      </div>
+    </div>
+  </template>
+  <script>
+
+    var MAX_MESSAGE_LENGTH = 130;
+
+    Polymer({
+
+      is: 'message-grid-item',
+
+      behaviors: [
+        MessageItemBehavior,
+      ],
+
+      _truncated: function(content) {
+        return (content.length > MAX_MESSAGE_LENGTH) 
+          ? content.substring(0, MAX_MESSAGE_LENGTH) + '…' : content;
+      },
+
+    });
+
+  </script>
+</dom-module>

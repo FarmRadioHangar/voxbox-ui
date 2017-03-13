@@ -1,0 +1,152 @@
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../messages/message-compose-dialog.html">
+<link rel="import" href="call-dialog.html">
+<link rel="import" href="channel-item.html">
+
+<dom-module id="channel-list">
+  <template>
+    <style>
+
+      :host {
+        display: flex;
+      }
+
+      paper-fab {
+        position: fixed;
+        right: 30px;
+        bottom: 30px;
+        --paper-fab-background: rgb(0, 188, 212); 
+        z-index: 2;
+      }
+
+      .channel-container {
+        width: 100%;
+        display: flex; 
+        flex-flow: wrap row; 
+        overflow: auto;
+        margin: 50px;
+      }
+
+    </style>
+    <message-compose-dialog
+      id                      = "message-compose-dialog"
+      on-confirmed            = "_handleSendMessage"
+      channels                = "[[activeChannels]]">
+    </message-compose-dialog>
+    <call-dialog
+      id                      = "call-dialog"
+      on-confirmed            = "_handleCall"
+      channels                = "[[activeChannels]]">
+    </call-dialog>
+    <div class                = "channel-container">
+      <template 
+        is                    = "dom-repeat" 
+        items                 = "{{channels}}" 
+        as                    = "channel">
+        <channel-item 
+          on-show-call-dialog = "_openCallDialog"
+          on-call-number      = "onCallNumber"
+          on-send-sms         = "onSendMessage"
+          channel             = "[[channel]]">
+        </channel-item>
+      </template>
+    </div>
+    <paper-fab 
+      on-tap                  = "_openCallDialog" 
+      icon                    = "communication:dialpad">
+    </paper-fab>
+  </template>
+  <script>
+
+    Polymer({
+
+      is: 'channel-list',
+
+      properties: {
+        activeChannels: {
+          type: Array,
+          computed: '_activeChannels(channels, channels.*)',
+        },
+      },
+
+      ready: function() {
+        this._messageCount = 0;
+      },
+
+      onCallNumber: function(e) {
+        var dialog = this.$['call-dialog'];
+        Polymer.dom(document.querySelector('body')).appendChild(dialog);
+        dialog.open();
+        var channel = e.detail;
+        if (channel) {
+          dialog.number = channel.contact.number;
+          dialog.channel = channel.id;
+        }
+      },
+
+      onSendMessage: function(e) {
+        var dialog = this.$['message-compose-dialog'];
+        Polymer.dom(document.querySelector('body')).appendChild(dialog);
+        dialog.open();
+        var channel = e.detail;
+        if (channel) {
+          dialog.number = channel.contact.number;
+          dialog.channel = channel.id;
+        }
+      },
+
+      _openCallDialog: function(e) {
+        var dialog = this.$['call-dialog'];
+        Polymer.dom(document.querySelector('body')).appendChild(dialog);
+        dialog.open();
+        if (e && e.detail && 'object' !== typeof(e.detail)) {
+          dialog.channel = e.detail;
+        }
+      },
+
+      _handleSendMessage: function() {
+        var dialog = this.$['message-compose-dialog'];
+        var message = {
+          type: 'sms_out',
+          endpoint: dialog.number,
+          content: dialog.message,
+          channel_id: ('__auto__' === dialog.channel ? null : dialog.channel),
+        };
+        var id = (Date.now()+'').substr(-8) + (++this._messageCount);
+        var payload = {};
+        payload[id] = message;
+        this.fire('message', {
+          event: 'messageSend',
+          data: payload,
+        });
+      },
+
+      _handleCall: function() {
+        var dialog = this.$['call-dialog'];
+        this.fire('message', {
+          event: 'callNumber',
+          data: {
+            number: dialog.number,
+            mode: 'master',
+            channel_id: ('__auto__' === dialog.channel ? null : dialog.channel),
+          },
+        });
+        var toast = document.createElement('paper-toast');
+        toast.text = 'Calling ' + dialog.number;             
+        document.body.appendChild(toast); 
+        toast.show();
+      },
+
+      _activeChannels: function(channels) {
+        return channels.filter(function(channel) {
+          return 'free' === channel.mode;
+        });
+      },
+
+    });
+
+  </script>
+</dom-module>
+

@@ -4,25 +4,16 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>VoxBox</title>
+    <title></title>
     <meta name="description" content="voxbox-polymer-frontend description">
 
-    <!-- See https://goo.gl/OOhYW5 -->
-    <link rel="manifest" href="/manifest.json">
-
     <script src="/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-
-    <!-- Material Design Lite -->
-    <link rel="stylesheet" href="/bower_components/material-design-icons/iconfont/material-icons.css">
-    <link rel="stylesheet" href="/bower_components/material-design-lite/material.min.css">
-    <script src="/bower_components/material-design-lite/material.min.js"></script>
-
-    <!-- Font Awesome Animation -->
-    <link rel="stylesheet" href="/bower_components/font-awesome-animation/dist/font-awesome-animation.min.css">
-
     <script src="/bower_components/moment/moment.js"></script>
+    <script src="/bower_components/robust-websocket/robust-websocket.js"></script>
+    
+    <link rel="import" href="/src/message-app.html">
 
-    <link rel="import" href="/src/poly-app/poly-app.html">
+    <link rel="stylesheet" href="/bower_components/font-awesome-animation/dist/font-awesome-animation.min.css">
 
     <style>
       body {
@@ -31,11 +22,11 @@
         line-height: 1.5;
         min-height: 100vh;
         background-color: #eeeeee;
-        background: url(/images/giftly/giftly.png);
+        background-image: url(/images/giftly/giftly.png);
       }
     </style>
   </head>
   <body>
-    <poly-app></poly-app>
+    <message-app></message-app>
   </body>
 </html>

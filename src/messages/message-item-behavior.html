@@ -1,0 +1,45 @@
+<script>
+  MessageItemBehavior = {
+
+    properties: {
+      selected: {
+        type: Boolean,
+        value: false,
+      },
+      favorite: {
+        type: Boolean,
+        value: false,
+      },
+      selectMode: {
+        type: Boolean,
+        value: false,
+      },
+    },
+
+    _toggleSelected: function(e) {
+      this.fire('selected-toggled', e);
+    },
+
+    _toggleFavorite: function(e) {
+      this.fire('favorite-toggled', e);
+    },
+
+    _formatDate: function(stamp) {
+      return moment(Number(stamp)).format('ddd, MMM Do YYYY, h:mm:ss a'); 
+    },
+
+    _favoriteButtonIcon: function(favorite) {
+      return favorite ? 'star' : 'star-border';
+    },
+
+    _showMessage: function(e) {
+      this.fire('show-details');
+    },
+
+    _itemClass: function(selectMode) {
+      return 'message-item' + (selectMode ? ' select-mode' : '');
+    },
+
+  };
+</script>
+
