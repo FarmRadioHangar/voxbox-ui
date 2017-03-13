@@ -1,6 +1,6 @@
 {
   "entrypoint": "index.html",
-  "shell": "src/poly-app/poly-app.html",
+  "shell": "src/client-app.html",
   "fragments": [
   ],
   "sourceGlobs": [
