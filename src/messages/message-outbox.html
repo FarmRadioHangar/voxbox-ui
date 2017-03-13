@@ -1,0 +1,110 @@
+<link rel="import" href="../../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/spinner-backdrop/spinner-backdrop.html">
+<link rel="import" href="confirm-delete-dialog.html">
+<link rel="import" href="message-controls.html">
+<link rel="import" href="message-details.html">
+<link rel="import" href="message-list-behavior.html">
+<link rel="import" href="message-list-item.html">
+<link rel="import" href="message-list-styles.html">
+
+<dom-module id="message-outbox">
+  <template>
+    <style include="message-list-styles"></style>
+    <confirm-delete-dialog id                      = "confirm-delete-dialog" 
+      on-delete-confirmed     = "_handleDeleteSelection"
+      selection-size          = "[[selectionSize]]">
+    </confirm-delete-dialog>
+    <message-details 
+      id                      = "details"
+      channels                = "[[channels]]"
+      on-delete-item          = "_handleDeleteConfirmed"
+      on-next                 = "showNextMessage"
+      on-prev                 = "showPreviousMessage"
+      on-sms-out              = "_handleSMSOut">
+    </message-details>
+    <div
+      class                   = "no-messages"
+      hidden$                 = "[[!isEmpty]]">
+      <paper-material>
+        There are no messages here.
+      </paper-material>
+    </div>
+    <iron-list
+      id                      = "list"
+      as                      = "item"
+      selected-items          = "{{selection}}"
+      on-scroll               = "onScroll"
+      items                   = "[[messages]]"
+      max-physical-count      = "1000"
+      multi-selection>
+      <template>
+        <message-list-item
+          on-tap              = "onTap"
+          on-selected-toggled = "onSelectedToggled"
+          on-show-details     = "onShowDetails"
+          select-mode         = "[[hasSelection]]"
+          selected            = "[[selected]]"
+          item                = "[[item]]"
+          outgoing>
+        </message-list-item>
+      </template>
+    </iron-list>
+    <message-controls
+      id                      = "controls"
+      on-iron-resize          = "onResize"
+      on-select-all           = "onSelectAll"
+      on-unselect-all         = "onUnselectAll"
+      on-delete-selection     = "onDeleteSelection"
+      has-selection           = "[[hasSelection]]"
+      selection-size          = "[[selectionSize]]"
+      outgoing>
+    </message-controls>
+  </template>
+  <script>
+
+    Polymer({
+
+      is: 'message-outbox',
+
+      properties: {
+        isEmpty: {
+          type: Boolean,
+          value: false,
+        },
+      },
+
+      behaviors: [
+        MessageListBehavior,
+      ],
+
+      observers: [
+        '_updateIsEmpty(messages, messages.*)',
+      ],
+
+      onScroll: function() {
+      },
+
+      onTap: function(e) {
+        if (this.hasSelection && ['checkboxContainer', 'icon'].indexOf(e.target.id) == -1) {
+          var list = this._getList();
+          e.model.selected ? list.deselectItem(e.model.index) 
+                           : list.selectItem(e.model.index);
+        }
+      },
+
+      _updateIsEmpty: function(messages) {
+        var nothing = !messages.length;
+        if (this.isEmpty != nothing) {
+          this.isEmpty = nothing;
+        }
+      },
+
+      _getList: function() {
+        return this.$.list;
+      },
+
+    });
+
+  </script>
+</dom-module>

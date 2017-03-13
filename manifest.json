@@ -1,0 +1,6 @@
+{
+  "name": "voxbox-polymer-messages",
+  "short_name": "voxbox-polymer-messages",
+  "start_url": "/",
+  "display": "standalone"
+}

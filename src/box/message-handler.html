@@ -1,0 +1,83 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="message-hander">
+  <template></template>
+  <script>
+
+    Polymer({
+
+      is: 'message-handler',
+
+      ready: function() {
+        this.connect();
+      },
+
+      forceReconnect: function() {
+        console.log('forceReconnect');
+        window.__socket.onclose = function () {}; 
+        window.__socket.close()
+        this.connect();
+      },
+
+      connect: function() {
+        //window.__socket = new WebSocket(this._getHostUrl()); 
+        window.__socket = new RobustWebSocket(this._getHostUrl(), null, { 
+          timeout: 4000,
+          shouldReconnect: function(event, ws) {
+            //if (event.code === 1008) 
+            //  return;
+            return [0, 3000, 10000][ws.attempts];
+          },
+          automaticOpen: true,
+        }); 
+        window.__socket.onerror = this.onError.bind(this);
+        window.__socket.onopen = this.onOpen.bind(this);
+        window.__socket.onclose = this.onClose.bind(this);
+        window.__socket.onmessage = this.onMessage.bind(this);
+      },
+
+      onError: function(event) {
+        this.fire('error');
+      },
+
+      onOpen: function(event) {
+        this.fire('open');
+      },
+
+      onClose: function(event) {
+        this.fire('close');
+      },
+
+      onMessage: function(event) {
+        var response = null;
+        try {
+          response = JSON.parse(event.data);
+        } catch(e) {
+          console.error(e);
+          return;
+        }
+        this.fire('message', response);
+      },
+
+      send: function(data) {
+        if (data.event != 'ping') {
+          console.log('>>>>>>>>>>>>>>> (send)');
+          console.log(data);
+        }
+        window.__socket.send(JSON.stringify(data));
+      },
+
+      _getURLParameter: function(name) {
+        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
+      },
+
+      _getHostUrl: function() {
+        var hostUrl = 'ws://' + (this._getURLParameter('host_url') || '192.168.1.7:19998');
+        //var hostUrl = 'ws://' + (this._getURLParameter('host_url') || 'thehangar.farmradio.org:51234');
+        return hostUrl;
+      },
+
+    });
+
+  </script>
+</dom-module>

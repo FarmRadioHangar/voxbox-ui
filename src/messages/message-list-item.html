@@ -1,0 +1,81 @@
+<link rel="import" href="../../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="message-item-behavior.html">
+<link rel="import" href="message-item-styles.html">
+
+<dom-module id="message-list-item">
+  <template>
+    <style include="message-item-styles"></style>
+    <style>
+
+      :host {
+        padding-right: 16px;
+      }
+
+      .message-item { 
+        margin: 0 auto;
+        max-width: 650px;
+        min-height: 70px;
+        border-bottom: 1px solid #dadada;
+        background: white;
+      }
+
+      .content {
+        padding-top: 0;
+      }
+
+    </style>
+    <div>
+    <div class$="[[_itemClass(selectMode)]]">
+      <div class="layout" style="margin: 0 8px;">
+        <paper-checkbox 
+          on-tap   = "_toggleSelected"
+          checked  = "[[selected]]">
+        </paper-checkbox>
+        <paper-item-body>
+          <div secondary class="date">
+            <span>[[_formatDate(item.timestamp)]]</span>
+          </div>
+          <div>[[item.endpoint]]</div>
+        </paper-item-body>
+        <div>
+          <paper-icon-button 
+            class   = "star"
+            hidden$ = "[[outgoing]]"
+            on-tap  = "_toggleFavorite"
+            icon    = "[[_favoriteButtonIcon(item.favorite)]]">
+          </paper-icon-button>
+          <paper-icon-button 
+            on-tap = "_showMessage"
+            icon   = "unfold-more">
+          </paper-icon-button>
+        </div>
+      </div>
+      <div class="content">
+        <div>[[item.content]]</div>
+      </div>
+    </div>
+  </template>
+  <script>
+
+    Polymer({
+
+      is: 'message-list-item',
+
+      properties: {
+        outgoing: {
+          type: Boolean,
+          value: false,
+        },
+      },
+
+      behaviors: [
+        MessageItemBehavior,
+      ],
+
+    });
+
+  </script>
+</dom-module>

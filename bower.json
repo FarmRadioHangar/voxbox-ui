@@ -1,0 +1,33 @@
+{
+  "name": "voxbox-polymer-messages",
+  "authors": [
+    "Farm Radio International"
+  ],
+  "description": "",
+  "version": "0.3.0",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "webcomponentsjs": "webcomponents.js#^0.7.24"
+  },
+  "dependencies": {
+    "iron-elements": "PolymerElements/iron-elements#^1.0.10",
+    "paper-elements": "PolymerElements/paper-elements#^1.0.7",
+    "app-layout": "PolymerElements/app-layout#^0.10.7",
+    "spinner-backdrop": "^1.1.0",
+    "moment": "^2.17.1",
+    "array-filter": "43081j/array-filter#^1.0.2",
+    "app-storage": "PolymerElements/app-storage#^0.9.8",
+    "robust-websocket": "^0.2.1",
+    "font-awesome-animation": "^0.0.10"
+  }
+}
