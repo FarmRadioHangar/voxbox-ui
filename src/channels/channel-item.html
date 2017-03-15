@@ -159,7 +159,7 @@
             </div>
           </template>
           <template is="dom-if" if="[[_isMode(channel.mode, channel.direction, 'ring-incoming')]]">
-            <div class="ring indicator" style="">
+            <div class="ring indicator">
               <iron-icon icon="social:notifications-active" class="faa-ring animated"></iron-icon>
             </div>
             <div style="text-align: center; margin: 10px 0;">
@@ -182,7 +182,7 @@
             </div>
           </template>
           <template is="dom-if" if="[[_isMode(channel.mode, channel.direction, 'on-hold')]]">
-            <div class="on-hold indicator" style="">
+            <div class="on-hold indicator">
               <iron-icon icon="av:pause"></iron-icon>
             </div>
             <div style="text-align: center; margin: 10px 0;">
@@ -205,7 +205,7 @@
             </div>
           </template>
           <template is="dom-if" if="[[_isMode(channel.mode, channel.direction, 'on-air')]]">
-            <div class="on-air indicator" style="">
+            <div class="on-air indicator">
               <iron-icon icon="av:mic"></iron-icon>
             </div>
             <div style="text-align: center; margin: 10px 0;">
