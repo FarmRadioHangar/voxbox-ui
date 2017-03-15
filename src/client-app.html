@@ -93,7 +93,8 @@
       on-open             = "handleConnectionOpened"
       on-close            = "handleConnectionClosed"
       on-message          = "handleMessage"
-      on-error            = "handleError">
+      on-error            = "handleError"
+      debug               = "[[debug]]">
     </message-handler>
     <connection-monitor
       id                  = "monitor"
@@ -271,15 +272,19 @@
       },
 
       handleConnectionOpened: function() {
-        console.log('handleConnectionOpened()');
+        if (this.debug) {
+          console.log('handleConnectionOpened()');
+        }
       },
 
       handleConnectionClosed: function() {
-        console.log('handleConnectionClosed()');
+        if (this.debug) {
+          console.log('handleConnectionClosed()');
+        }
       },
 
       handleMessage: function(event, payload) {
-        if ('pong' != payload.event) {
+        if (this.debug && 'pong' != payload.event) {
           console.log('<<<<<<<<<<<<<<< (recv)');
           console.log(payload);
         }
@@ -297,8 +302,6 @@
                 outbox.push(message);
               }
             });
-            console.log('in  : ' + inbox.length);
-            console.log('out : ' + outbox.length);
             this.set('inbox', inbox.reverse());
             this.set('outbox', outbox.reverse());
             break;
@@ -342,7 +345,9 @@
             }
             break;
           case 'initialize':
-            console.log("              .,,,''''''',,\n         .,,,/           ,~~~\\.     /~~~\\     \\   \\\n/     __/               /      \\_'''',,,/     ))  ))\n\\_O--/                  |       \\    __ \",,  //  //\n    |                    /  \\_  /     @)  ''//_ //\n   |                      ',,,/      ~~    //  ~~__\n   |          )             (           __//        ---___ _/OO\n    \\          )     /    )   ( ,,,,   (_Q   '''----_______,_/\n      \\       |--.-- #|   |,,,/\\_   ~~\\/\n        \\____________#| /    \\_ ''\\___\n         /  /    _/  /         ~~\\ __ \\\n        /__/   #|__/                 |##\n        |##    ~~");
+            if (this.debug) {
+              console.log("              .,,,''''''',,\n         .,,,/           ,~~~\\.     /~~~\\     \\   \\\n/     __/               /      \\_'''',,,/     ))  ))\n\\_O--/                  |       \\    __ \",,  //  //\n    |                    /  \\_  /     @)  ''//_ //\n   |                      ',,,/      ~~    //  ~~__\n   |          )             (           __//        ---___ _/OO\n    \\          )     /    )   ( ,,,,   (_Q   '''----_______,_/\n      \\       |--.-- #|   |,,,/\\_   ~~\\/\n        \\____________#| /    \\_ ''\\___\n         /  /    _/  /         ~~\\ __ \\\n        /__/   #|__/                 |##\n        |##    ~~");
+            }
             this.send('inboxFetch', {
               filter: [], 
               after_id: null,
@@ -376,8 +381,8 @@
         }
       },
 
-      handleError: function() {
-        console.log('handleError()');
+      handleError: function(e) {
+        console.error(e);
       },
 
       sendMessage: function(e) {

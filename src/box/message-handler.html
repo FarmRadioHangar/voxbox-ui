@@ -8,6 +8,13 @@
 
       is: 'message-handler',
 
+      properties: {
+        debug: {
+          type: Boolean,
+          value: false,
+        },
+      },
+
       ready: function() {
         this.connect();
       },
@@ -37,7 +44,7 @@
       },
 
       onError: function(event) {
-        this.fire('error');
+        this.fire('error', event);
       },
 
       onOpen: function(event) {
@@ -60,7 +67,7 @@
       },
 
       send: function(data) {
-        if (data.event != 'ping') {
+        if (this.debug && data.event != 'ping') {
           console.log('>>>>>>>>>>>>>>> (send)');
           console.log(data);
         }

@@ -317,22 +317,19 @@
             case 'GSM/GPRS':
               return '2G';
           }
-          return '';
         }
+        return '';
       },
 
       _computedProvider: function() {
         if (this.channel.connection) {
           var provider = this.channel.connection.provider;
-          if ('NONE' == provider) {
-            return '';
-          }
-          return provider;
+          return ('NONE' == provider) ? '' : provider;
         }
+        return '';
       },
 
       _handleMenuSelected: function(e, detail) {
-        console.log(e.target.indexOf(detail.item));
         switch (e.target.indexOf(detail.item)) {
           case 0:
             this.fire('call-number', this.channel);
@@ -473,10 +470,6 @@
 
       _muteIcon: function(muted) {
         return muted ? 'av:volume-off' : 'av:volume-up';
-      },
-
-      _vardump: function(channel) {
-        return JSON.stringify(channel, null, 2);
       },
 
     });
