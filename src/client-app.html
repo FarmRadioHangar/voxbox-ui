@@ -140,7 +140,7 @@
           <div main-title>
             <!-- http://fontmeme.com/fonts/young-frankenstein-font/ 28 -->
             <img src="/images/voxbox.png" style="margin-top: 6px;" />
-            <span style="font-size: 11px; float: right; margin-top: 24px; font-weight: bold; opacity: 0.5;">?.?.?(box) 0.3.1(client)</span>
+            <span style="font-size: 11px; float: right; margin-top: 24px; font-weight: bold; opacity: 0.5;">[[version]](box) 0.3.1(client)</span>
           </div>
         </app-toolbar>
         <paper-tabs selected="{{tab}}">
@@ -240,6 +240,10 @@
         debug: {
           type: Boolean,
           value: false,
+        },
+        version: {
+          type: String,
+          value: '',
         },
       },
 
@@ -354,6 +358,7 @@
               count: 1000,
             });
             this.channels = payload.data.mixer.channels;
+            this.version = payload.data.server_version || 'unknown version';
             window.setTimeout(function() {
               this.hasInitialized = true;
             }.bind(this), 1000);
