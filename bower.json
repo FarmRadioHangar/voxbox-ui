@@ -1,10 +1,10 @@
 {
-  "name": "voxbox-polymer-frontend",
+  "name": "voxbox-ui",
   "authors": [
     "Farm Radio International"
   ],
   "description": "",
-  "version": "0.3.1.1",
+  "version": "0.3.1.2",
   "main": "",
   "license": "MIT",
   "homepage": "",

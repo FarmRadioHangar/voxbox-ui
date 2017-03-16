@@ -1,4 +1,4 @@
-# voxbox-polymer-frontend
+# voxbox-ui
 
 1. Install [Polymer CLI](https://www.polymer-project.org/1.0/docs/tools/polymer-cli).
 2. Run `bower install`.
