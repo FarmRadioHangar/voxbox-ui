@@ -1,6 +1,6 @@
 {
-  "name": "voxbox-polymer-fronted",
-  "short_name": "voxbox-polymer-frontend",
+  "name": "voxbox-ui",
+  "short_name": "voxbox-ui",
   "start_url": "/",
   "display": "standalone"
 }
