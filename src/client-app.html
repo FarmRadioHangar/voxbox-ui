@@ -87,6 +87,14 @@
         margin: 30px 0;
       }
 
+      span.version {
+        font-size: 11px; 
+        float: right; 
+        margin-top: 24px; 
+        font-weight: bold; 
+        opacity: 0.5;
+      }
+
     </style>
     <message-handler 
       id                  = "message-handler"
@@ -107,11 +115,15 @@
     <error-dialog
       id                  = "error-dialog">
     </error-dialog>
-    <iron-iconset-svg name="custom" size="24">
+    <iron-iconset-svg 
+      name                = "custom" 
+      size                = "24">
       <svg>
         <defs>
           <g id="outbox">
-            <path fill="#ffffff" d="M14,14H10V11H8L12,7L16,11H14V14M16,11M5,15V5H19V15H15A3,3 0 0,1 12,18A3,3 0 0,1 9,15H5M19,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3" />
+            <path 
+              fill        = "#ffffff" 
+              d           = "M14,14H10V11H8L12,7L16,11H14V14M16,11M5,15V5H19V15H15A3,3 0 0,1 12,18A3,3 0 0,1 9,15H5M19,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3" />
           </g>
         </defs>
       </svg>
@@ -140,7 +152,7 @@
           <div main-title>
             <!-- http://fontmeme.com/fonts/young-frankenstein-font/ 28 -->
             <img src="/images/voxbox.png" style="margin-top: 6px;" />
-            <span style="font-size: 11px; float: right; margin-top: 24px; font-weight: bold; opacity: 0.5;">[[version]](box) 0.3.1.2(client)</span>
+            <span class="version">[[version]](box) 0.3.1.2(client)</span>
           </div>
         </app-toolbar>
         <paper-tabs selected="{{tab}}">
