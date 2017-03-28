@@ -193,13 +193,15 @@
           on-message      = "sendMessage"
           unread          = "{{unread}}"
           messages        = "[[inbox]]"
-          channels        = "[[activeChannels]]">
+          channels        = "[[activeChannels]]"
+          debug           = "[[debug]]">
         </message-inbox>
         <message-outbox
           id              = "outbox"
           on-message      = "sendMessage"
           messages        = "[[outbox]]"
-          channels        = "[[activeChannels]]">
+          channels        = "[[activeChannels]]"
+          debug           = "[[debug]]">
         </message-outbox>
       </iron-pages>
     </app-header-layout>
@@ -280,6 +282,7 @@
         }.bind(this), 10000);
         if (this._getURLParameter('debug')) {
           this.debug = true;
+          console.log(this.$.inbox.freshold);
         }
       },
 
