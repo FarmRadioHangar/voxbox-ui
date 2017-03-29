@@ -222,21 +222,22 @@
 
       onUnstarAll: function() {
         var ids = [];
-        this.messages
-          .filter(function(item) { 
-            return !!item.favorite; 
-          }, this)
-          .forEach(function(item) {
-            this.set('filtered.' + this.filtered.indexOf(item) + '.favorite', false);
-            ids.push(item.id);
-          }, this);
+        this._process(this.filtered.filter(function(item) { 
+          return !!item.favorite; 
+        }, this), function(item) {
+          this.set('filtered.' + this.filtered.indexOf(item) + '.favorite', false);
+          ids.push(item.id);
+        }, function() {
+          this._getList().clearSelection();
+          this._updateSelection();
+          if (ids.length) {
+            this.fire('message', {
+              event: 'messageFavoriteUnset',
+              data: ids,
+            });
+          }
+        });
         this.filterStarred = false;
-        if (ids.length) {
-          this.fire('message', {
-            event: 'messageFavoriteUnset',
-            data: ids,
-          });
-        }
       },
 
       onScroll: function() {
@@ -279,17 +280,17 @@
         }, function() {
           this._getList().clearSelection();
           this._updateSelection();
-        });
-        if ('favorite' === prop) {
-          if (ids.length) {
-            this.fire('message', {
-              event: (value ? 'messageFavoriteSet' : 'messageFavoriteUnset'),
-              data: ids,
-            });
+          if ('favorite' === prop) {
+            if (ids.length) {
+              this.fire('message', {
+                event: (value ? 'messageFavoriteSet' : 'messageFavoriteUnset'),
+                data: ids,
+              });
+            }
+          } else {
+            // In the future, implement other properties here
           }
-        } else {
-          // In the future, implement other properties here
-        }
+        });
       },
 
       _filterStarredChanged: function(filterStarred) {
