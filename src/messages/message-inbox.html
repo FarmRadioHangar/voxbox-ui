@@ -221,12 +221,14 @@
       },
 
       onUnstarAll: function() {
+        var indices = [];
         var ids = [];
-        this._process(this.filtered.filter(function(item) { 
-          return !!item.favorite; 
-        }, this), function(item) {
-          this.set('filtered.' + this.filtered.indexOf(item) + '.favorite', false);
-          ids.push(item.id);
+        this.filtered.forEach(function(item) { 
+          indices.push(this.messages.indexOf(item)); 
+          ids.push(item.id); 
+        }, this);
+        this._process(indices, function(index) {
+          this.set('messages.' + index + '.favorite', false);
         }, function() {
           this._getList().clearSelection();
           this._updateSelection();
