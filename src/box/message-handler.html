@@ -27,7 +27,6 @@
       },
 
       connect: function() {
-        //window.__socket = new WebSocket(this._getHostUrl()); 
         window.__socket = new RobustWebSocket(this._getHostUrl(), null, { 
           timeout: 4000,
           shouldReconnect: function(event, ws) {
