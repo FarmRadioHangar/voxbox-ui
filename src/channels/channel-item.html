@@ -120,6 +120,14 @@
         zoom: 120%;
       }
 
+      .defunct {
+        display: flex; 
+        align-items: center; 
+        font-size: 14px; 
+        color: #adadad; 
+        text-align: center;
+      }
+
     </style>
     <edit-contact-dialog
       id                  = "edit-contact-dialog"
@@ -309,7 +317,7 @@
             </div>
           </template>
           <template is="dom-if" if="[[_isDefunct(channel.mode)]]">
-            <div style="display: flex; align-items: center; font-size: 14px; color: #adadad; text-align: center;"> 
+            <div class="defunct"> 
               <iron-icon icon="communication:no-sim" style="margin-right: 4px;"></iron-icon>
               Defunct channel
             </div>
