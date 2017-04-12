@@ -389,6 +389,8 @@
           switch (mode) {
             case 'GSM/GPRS':
               return '2G';
+            default:
+              return mode;
           }
         }
         return '';
