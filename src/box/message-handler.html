@@ -78,8 +78,10 @@
       },
 
       _getHostUrl: function() {
-        var hostUrl = 'ws://' + (this._getURLParameter('host_url') || '192.168.1.7:19998');
-        //var hostUrl = 'ws://' + (this._getURLParameter('host_url') || 'thehangar.farmradio.org:51234');
+        var hostUrl = 'ws://' + (this._getURLParameter('host_url') || (window.location.hostname + ':19998')); // thehangar.farmradio.org:51234
+        if (this.debug) {
+          console.log('host url: ' + hostUrl);
+        }
         return hostUrl;
       },
 
