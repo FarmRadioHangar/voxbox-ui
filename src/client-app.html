@@ -8,6 +8,7 @@
 <link rel="import" href="../bower_components/iron-icons/communication-icons.html">
 <link rel="import" href="../bower_components/iron-icons/hardware-icons.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/iron-icons/notification-icons.html">
 <link rel="import" href="../bower_components/iron-iconset/iron-iconset.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/paper-badge/paper-badge.html">
@@ -21,6 +22,7 @@
 <link rel="import" href="error-dialog.html">
 <link rel="import" href="messages/message-inbox.html">
 <link rel="import" href="messages/message-outbox.html">
+<link rel="import" href="restart-dialog.html">
 
 <dom-module id="client-app">
   <template>
@@ -115,6 +117,9 @@
     <error-dialog
       id                  = "error-dialog">
     </error-dialog>
+    <restart-dialog
+      id                  = "restart-dialog">
+    </restart-dialog>
     <iron-iconset-svg 
       name                = "custom" 
       size                = "24">
@@ -154,6 +159,7 @@
             <img src="/images/voxbox.png" style="margin-top: 6px;" />
             <span class="version">[[version]] client-0.3.5.1</span>
           </div>
+          <paper-icon-button icon="notification:power" on-tap="_showRestartDialog"></paper-icon-button>
         </app-toolbar>
         <paper-tabs selected="{{tab}}">
           <paper-tab>
@@ -491,6 +497,12 @@
             }
           }.bind(this));
         }
+      },
+
+      _showRestartDialog: function() {
+        var dialog = this.$['restart-dialog'];
+        Polymer.dom(document.querySelector('body')).appendChild(dialog);
+        dialog.open();
       },
 
     });

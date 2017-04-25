@@ -23,6 +23,7 @@
         console.log('forceReconnect');
         window.__socket.onclose = function () {}; 
         window.__socket.close()
+        window.__socket = null;
         this.connect();
       },
 
@@ -67,6 +68,9 @@
       },
 
       send: function(data) {
+        if (!window.__socket) {
+          return;
+        }
         if (this.debug && data.event != 'ping') {
           console.log('>>>>>>>>>>>>>>> (send)');
           console.log(data);

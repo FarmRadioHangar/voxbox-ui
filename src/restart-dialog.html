@@ -1,0 +1,50 @@
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="restart-dialog">
+  <template>
+    <style>
+
+      paper-dialog {
+        min-height: 130px;
+      }
+
+      paper-button {
+        color: rgb(0, 188, 212);
+      }
+
+    </style>
+    <paper-dialog 
+      id                     = "dialog"
+      style                  = "width: 550px;"
+      opened                 = "{{opened}}"
+      modal>
+      Hello
+    </paper-dialog>
+  </template>
+  <script>
+
+    Polymer({
+
+      is: 'restart-dialog',
+
+      properties: {
+        opened: {
+          type: Boolean,
+          value: false,
+        },
+      },
+
+      open: function() {
+        this.$.dialog.open();
+      },
+
+      close: function() {
+        this.$.dialog.close();
+      },
+
+    });
+
+  </script>
+</dom-module>
