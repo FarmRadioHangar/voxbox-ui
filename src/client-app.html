@@ -118,6 +118,7 @@
       id                  = "error-dialog">
     </error-dialog>
     <restart-dialog
+      on-restart          = "_restart"
       id                  = "restart-dialog">
     </restart-dialog>
     <iron-iconset-svg 
@@ -503,6 +504,10 @@
         var dialog = this.$['restart-dialog'];
         Polymer.dom(document.querySelector('body')).appendChild(dialog);
         dialog.open();
+      },
+
+      _restart: function(e, what) {
+        console.log('*** Restart ' + what + ' ***');
       },
 
     });
