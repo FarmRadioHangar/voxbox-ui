@@ -251,6 +251,10 @@
           type: Boolean,
           value: false,
         },
+        diff: {
+          type: Number,
+          value: 0,
+        },
         debug: {
           type: Boolean,
           value: false,
@@ -373,7 +377,12 @@
               count: 1000,
             });
             this.channels = payload.data.mixer.channels;
+            this.diff = Date.now()-payload.data.server_time;
             this.version = payload.data.server_version || 'unknown version';
+            if (this.debug) {
+              console.log('Server time : ' + payload.data.server_time);
+              console.log('Diff        : ' + this.diff);
+            }
             window.setTimeout(function() {
               this.hasInitialized = true;
             }.bind(this), 1000);
