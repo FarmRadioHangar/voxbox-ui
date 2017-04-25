@@ -147,6 +147,7 @@
               <div>[[channel.id]]</div>
               <div style="color: #737373; font-size: 13px;">[[channel.number]]</div>
             </paper-item-body>
+            <div style="float: right; text-align: right; margin-top: 43px;">[[timer]]</div>
           </div>
           <template is="dom-if" if="[[_isMode(channel.mode, channel.direction, 'ring-outgoing')]]">
             <channel-mode
@@ -162,28 +163,6 @@
               <paper-button on-tap = "_setChannelFree">Cancel</paper-button>
               <paper-button on-tap = "_handleEditContact">Edit</paper-button>
             </channel-mode>
-
-            <!--
-            <div style="text-align: center; margin: 10px 0;">
-              <p style="font-size: 20px; margin: 0; color: #1a88ae;">
-                Calling
-              </p>
-              <p class="contact-primary">
-                [[_contactPrimary(channel)]]
-              </p>
-              <template is="dom-if" if="[[_hasContactName(channel)]]">
-                <p class="contact-secondary">
-                  [[_contactSecondary(channel)]]
-                </p>
-              </template>
-              <div style="width: 100%; margin: 8px 0;">
-                <paper-progress indeterminate class="blue"></paper-progress>
-              </div>
-              <paper-button on-tap="_setChannelFree">Cancel</paper-button>
-              <paper-button on-tap="_handleEditContact">Edit</paper-button>
-            </div>
-            -->
-
           </template>
           <template is="dom-if" if="[[_isMode(channel.mode, channel.direction, 'ring-incoming')]]">
             <div class="ring indicator">
@@ -199,28 +178,6 @@
                 <paper-button on-tap="_handleEditContact">Edit</paper-button>
               </div>
             </channel-mode>
-
-            <!--
-            <div style="text-align: center; margin: 10px 0;">
-              <p style="font-size: 20px; margin: 0; color: #1a88ae;">
-                Incoming call
-              </p>
-              <p class="contact-primary">
-                [[_contactPrimary(channel)]]
-              </p>
-              <template is="dom-if" if="[[_hasContactName(channel)]]">
-                <p class="contact-secondary">
-                  [[_contactSecondary(channel)]]
-                </p>
-              </template>
-              <div>
-                <paper-button on-tap="_setChannelMaster">Answer</paper-button>
-                <paper-button on-tap="_setChannelFree">Reject</paper-button>
-                <paper-button on-tap="_handleEditContact">Edit</paper-button>
-              </div>
-            </div>
-            -->
-
           </template>
           <template is="dom-if" if="[[_isMode(channel.mode, channel.direction, 'on-hold')]]">
 
@@ -238,35 +195,11 @@
                 <paper-button on-tap="_handleEditContact">Edit</paper-button>
               </div>
             </channel-mode>
-
-            <!--
-            <div style="text-align: center; margin: 10px 0;">
-              <p style="font-size: 20px; margin: 0; color: #1a88ae;">
-                On hold
-              </p>
-              <p class="contact-primary">
-                [[_contactPrimary(channel)]]
-              </p>
-              <template is="dom-if" if="[[_hasContactName(channel)]]">
-                <p class="contact-secondary">
-                  [[_contactSecondary(channel)]]
-                </p>
-              </template>
-              <div>
-                <paper-button on-tap="_setChannelMaster">Resume</paper-button>
-                <paper-button on-tap="_setChannelFree">Hang up</paper-button>
-                <paper-button on-tap="_handleEditContact">Edit</paper-button>
-              </div>
-            </div>
-            -->
-
           </template>
           <template is="dom-if" if="[[_isMode(channel.mode, channel.direction, 'on-air')]]">
-
             <div class="on-air indicator">
               <iron-icon icon="av:mic"></iron-icon>
             </div>
-
             <channel-mode
               title                = "On air"
               contact-primary      = "[[_contactPrimary(channel)]]"
@@ -277,28 +210,6 @@
                 <paper-button on-tap="_handleEditContact">Edit</paper-button>
               </div>
             </channel-mode>
-
-            <!--
-            <div style="text-align: center; margin: 10px 0;">
-              <p style="font-size: 20px; margin: 0; color: #1a88ae;">
-                On air
-              </p>
-              <p class="contact-primary">
-                [[_contactPrimary(channel)]]
-              </p>
-              <template is="dom-if" if="[[_hasContactName(channel)]]">
-                <p class="contact-secondary">
-                  [[_contactSecondary(channel)]]
-                </p>
-              </template>
-              <div>
-                <paper-button on-tap="_setChannelOnHold">Hold</paper-button>
-                <paper-button on-tap="_setChannelFree">Hang up</paper-button>
-                <paper-button on-tap="_handleEditContact">Edit</paper-button>
-              </div>
-            </div>
-            -->
-
           </template>
           <div style="flex: 1;"></div>
           <template is="dom-if" if="[[_isActive(channel.mode)]]">
@@ -360,6 +271,14 @@
 
       is: 'channel-item',
 
+      ready: function() {
+        window.setInterval(function() {
+          var now = Date.now() - this.diff;
+          this.hours = moment(now).diff(this.channel.timestamp, 'hours')
+          this.minutes = moment(Math.max(0, moment(now).diff(this.channel.timestamp))).format('mm:ss');
+        }.bind(this), 1000);
+      },
+
       properties: {
         channel: {
           type: Object,
@@ -373,6 +292,10 @@
           type: String,
           computed: '_computedNetworkMode(channel.*)',
         },
+        timer: {
+          type: String,
+          computed: '_computedTimer(hours, minutes, channel.*)',
+        },
       },
 
       behaviors: [
@@ -381,6 +304,20 @@
 
       _initCall: function() {
         this.fire('show-call-dialog', this.channel.id);
+      },
+
+      _computedTimer: function(hours, minutes) {
+        if ('on_hold' === this.channel.mode) {
+          return 'On hold';
+        }
+        if ('master' === this.channel.mode) {
+          if (hours > 0) {
+            return hours + ':' + minutes;
+          }
+          return minutes;
+        } else {
+          return '';
+        }
       },
 
       _computedNetworkMode: function() {
