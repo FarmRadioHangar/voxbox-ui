@@ -118,7 +118,7 @@
       id                  = "error-dialog">
     </error-dialog>
     <restart-dialog
-      on-restart          = "_restart"
+      on-xml-http-request = "_sendXMLHttpRequest"
       channels            = "[[activeChannels]]"
       id                  = "restart-dialog">
     </restart-dialog>
@@ -507,24 +507,24 @@
         dialog.open();
       },
 
-      _restart: function(e, what) {
-        if (this.debug) {
-          console.log('*** Restart ' + what + ' ***');
-        }
-        switch (what) {
-          case 'modems':
-            /* @TODO */
-            //this.send('???', {});
-            break;
-          case 'box':
-            /* @TODO */
-            //this.send('???', {});
-            break;
-          case 'asterisk':
-            /* @TODO */
-            //this.send('???', {});
-            break;
-        }
+      _restart: function(e, message) {
+        //if (this.debug) {
+        //  console.log('*** Restart ' + what + ' ***');
+        //}
+        //switch (what) {
+        //  case 'modems':
+        //    /* @TODO */
+        //    //this.send('???', {});
+        //    break;
+        //  case 'box':
+        //    /* @TODO */
+        //    //this.send('???', {});
+        //    break;
+        //  case 'asterisk':
+        //    /* @TODO */
+        //    //this.send('???', {});
+        //    break;
+        //}
       },
 
     });

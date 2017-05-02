@@ -28,7 +28,7 @@
         items                = "{{channels}}" 
         as                   = "modem">
         <div>
-          <paper-button on-tap="_restartModems">Restart [[modem.id]]</paper-button>
+          <paper-button data-args$="[[modem.id]]" on-tap="_restartModems">Restart [[modem.id]]</paper-button>
         </div>
       </template>
       <div>
@@ -58,16 +58,16 @@
       },
 
       _restartBox: function() {
-        this.fire('restart', 'box');
+        //this.fire('xml-http-request', 'box');
       },
 
       _restartModems: function(e) {
-        console.log(e);
-        //this.fire('restart', 'modems');
+        console.log(e.target.getAttribute('data-args'));
+        //this.fire('xml-http-request', 'modems');
       },
 
       _restartAsterisk: function() {
-        this.fire('restart', 'asterisk');
+        //this.fire('xml-http-request', 'asterisk');
       },
 
     });
