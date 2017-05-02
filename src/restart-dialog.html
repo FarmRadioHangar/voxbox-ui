@@ -23,9 +23,14 @@
       <div>
         <paper-button on-tap="_restartBox">Restart Voxbox</paper-button>
       </div>
-      <div>
-        <paper-button on-tap="_restartModems">Restart modems</paper-button>
-      </div>
+      <template 
+        is                   = "dom-repeat" 
+        items                = "{{channels}}" 
+        as                   = "modem">
+        <div>
+          <paper-button on-tap="_restartModems">Restart [[modem.id]]</paper-button>
+        </div>
+      </template>
       <div>
         <paper-button on-tap="_restartAsterisk">Restart Asterisk</paper-button>
       </div>
@@ -56,8 +61,9 @@
         this.fire('restart', 'box');
       },
 
-      _restartModems: function() {
-        this.fire('restart', 'modems');
+      _restartModems: function(e) {
+        console.log(e);
+        //this.fire('restart', 'modems');
       },
 
       _restartAsterisk: function() {
