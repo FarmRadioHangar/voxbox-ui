@@ -62,8 +62,11 @@
       },
 
       _restartModems: function(e) {
-        console.log(e.target.getAttribute('data-args'));
-        //this.fire('xml-http-request', 'modems');
+        var modem = e.target.getAttribute('data-args');
+        this.fire('xml-http-request', {
+          reason: 'Initiated by user.',
+          name: modem,
+        });
       },
 
       _restartAsterisk: function() {

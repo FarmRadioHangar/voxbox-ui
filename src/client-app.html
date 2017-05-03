@@ -2,6 +2,7 @@
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/app-storage/app-network-status-behavior.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/iron-icons/av-icons.html">
@@ -98,6 +99,9 @@
       }
 
     </style>
+    <iron-ajax
+      id                  = "ajax">
+    </iron-ajax>
     <message-handler 
       id                  = "message-handler"
       on-open             = "handleConnectionOpened"
@@ -507,24 +511,17 @@
         dialog.open();
       },
 
-      _restart: function(e, message) {
-        //if (this.debug) {
-        //  console.log('*** Restart ' + what + ' ***');
-        //}
-        //switch (what) {
-        //  case 'modems':
-        //    /* @TODO */
-        //    //this.send('???', {});
-        //    break;
-        //  case 'box':
-        //    /* @TODO */
-        //    //this.send('???', {});
-        //    break;
-        //  case 'asterisk':
-        //    /* @TODO */
-        //    //this.send('???', {});
-        //    break;
-        //}
+      _sendXMLHttpRequest: function(e, params) {
+//        //this.$.xhr.send({
+//        //  url: 'http://localhost:19990',
+//        //  params: params,
+//        //});
+//        var ajax = document.querySelector('iron-ajax');
+//        //ajax.
+//        if (this.debug) {
+//          console.log('*** XML HTTP Request ***');
+//          console.log(params);
+//        }
       },
 
     });
