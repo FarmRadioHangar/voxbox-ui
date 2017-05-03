@@ -100,7 +100,8 @@
 
     </style>
     <iron-ajax
-      id                  = "ajax">
+      id                  = "ajax"
+      on-response         = "_handleAjaxResponse">
     </iron-ajax>
     <message-handler 
       id                  = "message-handler"
@@ -512,16 +513,18 @@
       },
 
       _sendXMLHttpRequest: function(e, params) {
-//        //this.$.xhr.send({
-//        //  url: 'http://localhost:19990',
-//        //  params: params,
-//        //});
-//        var ajax = document.querySelector('iron-ajax');
-//        //ajax.
-//        if (this.debug) {
-//          console.log('*** XML HTTP Request ***');
-//          console.log(params);
-//        }
+        var ajax = document.querySelector('iron-ajax');
+        ajax.url = 'http://192.168.1.6:19990/resetModems';
+        ajax.params = params;
+        ajax.generateRequest();
+        if (this.debug) {
+          console.log('*** XML HTTP Request ***');
+          console.log(params);
+        }
+      },
+
+      _handleAjaxResponse: function(r) {
+        console.log(r);
       },
 
     });
