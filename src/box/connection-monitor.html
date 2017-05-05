@@ -19,13 +19,17 @@
       ready: function() {
         this._lastPong = Date.now();
         window.setInterval(function() {
-          if (this.debug) {
-            console.log('ping!');
+          if (this.connected) {
+            if (this.debug) {
+              console.log('ping!');
+            }
+            this.fire('message', {
+              event: 'ping',
+              data: null,
+            });
+          } else {
+            this.fire('try-reconnect');
           }
-          this.fire('message', {
-            event: 'ping',
-            data: null,
-          });
         }.bind(this), 2500);
         window.setInterval(function() {
           var elapsed = Date.now() - this._lastPong;

@@ -27,11 +27,7 @@
       },
 
       connect: function() {
-        window.__socket = new RobustWebSocket(this._getHostUrl(), null, { 
-          timeout: 4000,
-          shouldReconnect: function(event, ws) { return 1000; },
-          automaticOpen: true,
-        }); 
+        window.__socket = new WebSocket(this._getHostUrl());
         window.__socket.onerror = this.onError.bind(this);
         window.__socket.onopen = this.onOpen.bind(this);
         window.__socket.onclose = this.onClose.bind(this);
