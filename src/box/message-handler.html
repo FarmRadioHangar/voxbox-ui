@@ -19,25 +19,19 @@
         this.connect();
       },
 
-      forceReconnect: function() {
-        console.log('forceReconnect');
+      hasDisconnected: function() {
+        console.log('hasDisconnected');
         window.__socket.onclose = function () {}; 
         window.__socket.close()
         window.__socket = null;
-        this.connect();
       },
 
       connect: function() {
-        window.__socket = new WebSocket(this._getHostUrl());
-        //window.__socket = new RobustWebSocket(this._getHostUrl(), null, { 
-        //  timeout: 4000,
-        //  shouldReconnect: function(event, ws) {
-        //    //if (event.code === 1008) 
-        //    //  return;
-        //    return [0, 3000, 10000][ws.attempts];
-        //  },
-        //  automaticOpen: true,
-        //}); 
+        window.__socket = new RobustWebSocket(this._getHostUrl(), null, { 
+          timeout: 4000,
+          shouldReconnect: function(event, ws) { return 1000; },
+          automaticOpen: true,
+        }); 
         window.__socket.onerror = this.onError.bind(this);
         window.__socket.onopen = this.onOpen.bind(this);
         window.__socket.onclose = this.onClose.bind(this);

@@ -289,7 +289,7 @@
 
       onDisconnected: function() {
         console.log('onDisconnected');
-        this.$['message-handler'].forceReconnect();
+        this.$['message-handler'].hasDisconnected();
       },
 
       ready: function() {
