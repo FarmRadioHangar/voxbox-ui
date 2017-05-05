@@ -50,6 +50,17 @@
         margin-bottom: 12px;
       }
 
+      .close-button-container {
+        float: right; 
+        text-align: right;
+      }
+
+      .close-button {
+        position: absolute; 
+        right: 10px; 
+        top: 10px;
+      }
+
     </style>
     <call-dialog
       id                  = "call-dialog"
@@ -70,6 +81,14 @@
       on-keydown          = "_handleKeyEvent"
       id                  = "dialog"
       with-backdrop>
+      <div class="close-button-container">
+        <div class="close-button">
+          <paper-icon-button
+            on-tap      = "close"
+            icon        = "icons:close">
+          </paper-icon-button>
+        </div>
+      </div>
       <div>
         <div class="message-container">
           <div class = "nav">
