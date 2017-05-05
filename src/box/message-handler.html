@@ -65,7 +65,9 @@
           console.log('>>>>>>>>>>>>>>> (send)');
           console.log(data);
         }
-        window.__socket.send(JSON.stringify(data));
+        if (window.__socket) {
+          window.__socket.send(JSON.stringify(data));
+        }
       },
 
       _getURLParameter: function(name) {
