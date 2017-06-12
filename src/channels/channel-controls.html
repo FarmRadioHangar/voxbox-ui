@@ -1,0 +1,37 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="channel-controls">
+  <template>
+    <style>
+
+      paper-button {
+        color: rgb(0, 188, 212);
+        font-size: 13px;
+      }
+
+      .buttons {
+        border-top: 1px solid #ddd;
+        padding: 8px;
+      }
+
+    </style>
+    <div class="buttons">
+      <paper-button on-tap="_initCall">
+        Make a call
+      </paper-button>
+    </div>
+  </template>
+  <script>
+
+    Polymer({
+
+      is: 'channel-controls',
+
+      _initCall: function() {
+        console.log('make call');
+      },
+
+    });
+
+  </script>
+</dom-module>
