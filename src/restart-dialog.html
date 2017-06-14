@@ -21,14 +21,21 @@
       style                  = "width: 250px;"
       opened                 = "{{opened}}">
       <div>
-        <paper-button on-tap="_restartBox">Restart Voxbox</paper-button>
+        <paper-button 
+          on-tap             = "_restartBox">
+          Restart Voxbox
+        </paper-button>
       </div>
       <template 
         is                   = "dom-repeat" 
         items                = "{{channels}}" 
         as                   = "modem">
         <div>
-          <paper-button data-args$="[[modem.id]]" on-tap="_restartModems">Restart [[modem.id]]</paper-button>
+          <paper-button 
+            data-args$       = "[[modem.id]]" 
+            on-tap           = "_restartModems">
+            Restart [[modem.id]]
+          </paper-button>
         </div>
       </template>
       <div>
