@@ -1,4 +1,11 @@
+<link rel="import" href="../../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../../bower_components/paper-menu/paper-menu.html">
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="edit-contact-dialog.html">
 
 <dom-module id="channel-controls">
   <template>
@@ -9,17 +16,47 @@
         font-size: 13px;
       }
 
+      paper-icon-item {
+        padding-right: 0;
+      }
+
       .buttons {
-        border-top: 1px solid #ddd;
-        padding: 8px;
+        padding: 8px 0;
       }
 
     </style>
-    <div class="buttons">
-      <paper-button on-tap="_initCall">
-        Make a call
-      </paper-button>
-    </div>
+    <edit-contact-dialog
+      id           = "edit-contact-dialog"
+      on-confirmed = "updateContact">
+    </edit-contact-dialog>
+    <template 
+      is = "dom-if" 
+      if = "[[isFree(mode)]]">
+      <div class="buttons">
+        <paper-button 
+          on-tap   = "initCall">
+          Make a call
+        </paper-button>
+      </div>
+      <div style="padding: 12px; border-top: 1px solid #ddd;">
+        <p style="margin: 0; color: #737373;">Last call</p>
+      </div>
+      <paper-icon-item>
+        <iron-icon icon="communication:phone" item-icon></iron-icon>
+        <paper-item-body two-line>
+          <div>[[contactPrimary]]</div>
+          <div secondary>[[contactSecondary]]</div>
+        </paper-item-body>
+        <paper-menu-button allow-outside-scroll no-animations>
+          <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
+          <paper-menu id="action-menu" on-iron-select="handleMenuSelected" class="dropdown-content">
+            <paper-item>Call</paper-item>
+            <paper-item>Edit</paper-item>
+            <paper-item>Send SMS</paper-item>
+          </paper-menu>
+        </paper-menu-button>
+      </paper-icon-item>
+    </template>
   </template>
   <script>
 
@@ -27,8 +64,74 @@
 
       is: 'channel-controls',
 
-      _initCall: function() {
-        console.log('make call');
+      properties: {
+        channelId: {
+          type: Number,
+        },
+        contactPrimary: {
+          type: String,
+        },
+        contactSecondary: {
+          type: String,
+        },
+        mode: {
+          type: String,
+        },
+      },
+
+      initCall: function() {
+        this.fire('show-call-dialog', this.channelId);
+      },
+
+      handleMenuSelected: function(e, detail) {
+        var channel = {
+          id: this.channelId,
+          number: this.contactSecondary || this.contactPrimary,
+        };
+        switch (e.target.indexOf(detail.item)) {
+          case 0:
+            this.fire('call-number', channel);
+            break;
+          case 1:
+            this.handleEditContact();
+            break;
+          case 2:
+            this.fire('send-sms', channel);
+            break;
+        }
+        e.target.select(null);
+      },
+
+      handleEditContact: function() {
+        var dialog = this.$['edit-contact-dialog'];
+        Polymer.dom(document.querySelector('body')).appendChild(dialog);
+        dialog.open();
+        if (this.contactSecondary) {
+          dialog.name = this.contactPrimary;
+          dialog.number = this.contactSecondary;
+        } else {
+          dialog.number = this.contactPrimary;
+        }
+      },
+
+      isFree: function(mode) {
+        return 'free' === mode;
+      },
+
+      updateContact: function() {
+        var dialog = this.$['edit-contact-dialog'];
+        var data = {};
+        data[this.channelId] = {
+          name: dialog.name,
+        };
+        this.fire('message', {
+          event: 'channelContactInfo',
+          data: data,
+        });
+        this.fire('update-contact', {
+          channelId: this.channelId,
+          name: dialog.name,
+        });
       },
 
     });
