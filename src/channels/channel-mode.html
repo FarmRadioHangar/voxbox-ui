@@ -33,7 +33,7 @@
       <p class="contact-primary">
         [[contactPrimary]]
       </p>
-      <template is="dom-if" if="[[_hasContactName(channel)]]">
+      <template is="dom-if" if="[[hasContactName]]">
         <p class="contact-secondary">
           [[contactSecondary]]
         </p>
@@ -42,12 +42,10 @@
     </div>
   </template>
   <script>
-
     Polymer({
 
       is: 'channel-mode',
 
     });
-
   </script>
 </dom-module>
