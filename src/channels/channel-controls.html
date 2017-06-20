@@ -38,24 +38,28 @@
           Make a call
         </paper-button>
       </div>
-      <div style="padding: 12px; border-top: 1px solid #ddd;">
-        <p style="margin: 0; color: #737373;">Last call</p>
-      </div>
-      <paper-icon-item>
-        <iron-icon icon="communication:phone" item-icon></iron-icon>
-        <paper-item-body two-line>
-          <div>[[contactPrimary]]</div>
-          <div secondary>[[contactSecondary]]</div>
-        </paper-item-body>
-        <paper-menu-button allow-outside-scroll no-animations>
-          <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
-          <paper-menu id="action-menu" on-iron-select="handleMenuSelected" class="dropdown-content">
-            <paper-item>Call</paper-item>
-            <paper-item>Edit</paper-item>
-            <paper-item>Send SMS</paper-item>
-          </paper-menu>
-        </paper-menu-button>
-      </paper-icon-item>
+      <template 
+        is = "dom-if" 
+        if = "[[hasContact(contactPrimary)]]">
+        <div style="padding: 12px; border-top: 1px solid #ddd;">
+          <p style="margin: 0; color: #737373;">Last call</p>
+        </div>
+        <paper-icon-item>
+          <iron-icon icon="communication:phone" item-icon></iron-icon>
+          <paper-item-body two-line>
+            <div>[[contactPrimary]]</div>
+            <div secondary>[[contactSecondary]]</div>
+          </paper-item-body>
+          <paper-menu-button allow-outside-scroll no-animations>
+            <paper-icon-button icon="more-vert" class="dropdown-trigger"></paper-icon-button>
+            <paper-menu id="action-menu" on-iron-select="handleMenuSelected" class="dropdown-content">
+              <paper-item>Call</paper-item>
+              <paper-item>Edit</paper-item>
+              <paper-item>Send SMS</paper-item>
+            </paper-menu>
+          </paper-menu-button>
+        </paper-icon-item>
+      </template>
     </template>
   </template>
   <script>
@@ -116,6 +120,10 @@
 
       isFree: function(mode) {
         return 'free' === mode;
+      },
+
+      hasContact: function(contact) {
+        return !!contact;
       },
 
       updateContact: function() {
