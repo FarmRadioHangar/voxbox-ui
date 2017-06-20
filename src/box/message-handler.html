@@ -20,7 +20,6 @@
       },
 
       hasDisconnected: function() {
-        console.log('hasDisconnected');
         window.__socket.onclose = function () {}; 
         window.__socket.close()
         window.__socket = null;
@@ -65,9 +64,7 @@
           console.log('>>>>>>>>>>>>>>> (send)');
           console.log(data);
         }
-        if (window.__socket) {
-          window.__socket.send(JSON.stringify(data));
-        }
+        window.__socket.send(JSON.stringify(data));
       },
 
       _getURLParameter: function(name) {
@@ -77,7 +74,7 @@
       _getHostUrl: function() {
         var hostUrl = 'ws://' + (this._getURLParameter('host_url') || (window.location.hostname + ':19998')); // thehangar.farmradio.org:51234
         if (this.debug) {
-          console.log('host url: ' + hostUrl);
+          console.log('Host: ' + hostUrl);
         }
         return hostUrl;
       },

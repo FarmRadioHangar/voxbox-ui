@@ -16,16 +16,20 @@
 
     </style>
     <paper-dialog 
+      modal
       id                     = "dialog"
       style                  = "width: 550px;"
-      opened                 = "{{opened}}"
-      modal>
+      opened                 = "{{opened}}">
       <h2>[[title]]</h2>
       <p>[[message]]</p>
       <content></content>
-      <template is="dom-if" if="[[canDismiss]]">
+      <template 
+        is                   = "dom-if" 
+        if                   = "[[canDismiss]]">
         <div class="buttons">
-          <paper-button dialog-dismiss>Ok</paper-button>
+          <paper-button dialog-dismiss>
+            Ok
+          </paper-button>
         </div>
       </template>
     </paper-dialog>
