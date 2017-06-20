@@ -12,10 +12,10 @@
 
     </style>
     <paper-dialog 
+      modal
       id                     = "dialog" 
       style                  = "width: 550px;" 
-      on-iron-overlay-closed = "onClosed"
-      modal>
+      on-iron-overlay-closed = "onClosed">
       <h2>Confirm delete</h2>
       <div>Are you sure you want to delete [[_msgLabel(selectionSize)]]?</div>
       <div class="buttons">
@@ -69,7 +69,8 @@
             selection = 'eight';
             break;
         }
-        return 1 == selection ? 'this message' : ('the ' + selection + ' selected messages');
+        return 1 == selection ? 'this message' 
+                              : ('the ' + selection + ' selected messages');
       },
 
       onClosed: function(event) {

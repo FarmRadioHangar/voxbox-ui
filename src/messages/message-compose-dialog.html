@@ -39,11 +39,11 @@
 
     </style>
     <paper-dialog
+      modal
       id                     = "dialog"
       entry-animation        = "fade-in-animation"
       exit-animation         = "fade-out-animation"
-      on-iron-overlay-closed = "onClosed"
-      modal>
+      on-iron-overlay-closed = "onClosed">
       <h2>Send message</h2>
       <div>
         <label id            = "label1">
@@ -68,23 +68,30 @@
         </paper-radio-group>
       </div>
       <paper-input
+        required 
+        auto-validate 
         id                   = "number-input"
         label                = "Number"
         value                = "{{number}}"
-        required 
-        auto-validate 
         error-message        = "This field is required.">
       </paper-input>
       <paper-textarea
+        char-counter 
+        auto-validate
         label                = "Message content"
         value                = "{{message}}"
-        maxlength            = "160"
-        char-counter 
-        auto-validate>
+        maxlength            = "160">
       </paper-textarea>
       <div class="buttons">
-        <paper-button dialog-dismiss>Cancel</paper-button>
-        <paper-button disabled="[[_formValid(number)]]" dialog-confirm autofocus>Send</paper-button>
+        <paper-button dialog-dismiss>
+          Cancel
+        </paper-button>
+        <paper-button 
+          dialog-confirm 
+          autofocus
+          disabled           = "[[!formValid(number)]]">
+          Send
+        </paper-button>
       </div>
     </paper-dialog>
   </template>
@@ -127,13 +134,11 @@
         }
       },
 
-      _formValid: function(number) {
-        return !number;
-      }
+      formValid: function(number) {
+        return !!number;
+      },
 
     });
 
   </script>
 </dom-module>
-
-

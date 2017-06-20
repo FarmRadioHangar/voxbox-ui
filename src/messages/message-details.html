@@ -4,6 +4,7 @@
 <link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../channels/call-dialog.html">
 <link rel="import" href="confirm-delete-dialog.html">
 <link rel="import" href="message-compose-dialog.html">
 
@@ -79,14 +80,14 @@
       <div>
         <div class="close-button">
           <paper-icon-button
-            on-tap      = "close"
-            icon        = "icons:close">
+            on-tap        = "close"
+            icon          = "icons:close">
           </paper-icon-button>
         </div>
       </div>
       <div>
         <div class="message-container">
-          <div class = "nav">
+          <div class="nav">
             <paper-icon-button
               on-tap      = "_showPrevious"
               icon        = "icons:chevron-left">
