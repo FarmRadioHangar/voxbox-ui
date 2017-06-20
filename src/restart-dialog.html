@@ -22,10 +22,11 @@
       opened                 = "{{opened}}">
       <div>
         <paper-button 
-          on-tap             = "_restartBox">
+          on-tap             = "restartBox">
           Restart Voxbox
         </paper-button>
       </div>
+      <!--
       <template 
         is                   = "dom-repeat" 
         items                = "{{channels}}" 
@@ -33,14 +34,18 @@
         <div>
           <paper-button 
             data-args$       = "[[modem.id]]" 
-            on-tap           = "_restartModems">
+            on-tap           = "restartModems">
             Restart [[modem.id]]
           </paper-button>
         </div>
       </template>
       <div>
-        <paper-button on-tap="_restartAsterisk">Restart Asterisk</paper-button>
+        <paper-button 
+          on-tap             = "restartAsterisk">
+          Restart Asterisk
+        </paper-button>
       </div>
+      -->
     </paper-dialog>
   </template>
   <script>
@@ -64,21 +69,26 @@
         this.$.dialog.close();
       },
 
-      _restartBox: function() {
-        //this.fire('xml-http-request', 'box');
+      restartBox: function() {
+        this.fire('xml-http-request', {
+          action: 'systemRestart',
+          reason: 'User initiated',
+        });
       },
 
-      _restartModems: function(e) {
+      /*
+      restartModems: function(e) {
         var modem = e.target.getAttribute('data-args');
         this.fire('xml-http-request', {
-          reason: 'Initiated by user.',
+          reason: 'Initiated by user',
           name: modem,
         });
       },
 
-      _restartAsterisk: function() {
-        //this.fire('xml-http-request', 'asterisk');
+      restartAsterisk: function() {
+        this.fire('xml-http-request', 'asterisk');
       },
+      */
 
     });
 
