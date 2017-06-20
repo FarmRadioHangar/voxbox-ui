@@ -100,60 +100,60 @@
 
     </style>
     <iron-ajax
-      id                  = "ajax"
-      on-response         = "_handleAjaxResponse">
+      id                    = "ajax"
+      on-response           = "_handleAjaxResponse">
     </iron-ajax>
     <message-handler 
-      id                  = "message-handler"
-      on-open             = "handleConnectionOpened"
-      on-close            = "handleConnectionClosed"
-      on-message          = "handleMessage"
-      on-error            = "handleError"
-      debug               = "[[debug]]">
+      id                    = "message-handler"
+      on-open               = "handleConnectionOpened"
+      on-close              = "handleConnectionClosed"
+      on-message            = "handleMessage"
+      on-error              = "handleError"
+      debug                 = "[[debug]]">
     </message-handler>
     <connection-monitor
-      id                  = "monitor"
-      connected           = "{{boxConnected}}"
-      on-connected        = "onConnected"
-      on-disconnected     = "onDisconnected"
-      on-try-reconnect    = "reconnect"
-      on-message          = "sendMessage"
-      debug               = "[[debug]]">
+      id                    = "monitor"
+      connected             = "{{boxConnected}}"
+      on-connected          = "onConnected"
+      on-disconnected       = "onDisconnected"
+      on-try-reconnect      = "reconnect"
+      on-message            = "sendMessage"
+      debug                 = "[[debug]]">
     </connection-monitor>
     <error-dialog
-      id                  = "error-dialog">
+      id                    = "error-dialog">
     </error-dialog>
     <restart-dialog
-      on-xml-http-request = "_sendXMLHttpRequest"
-      channels            = "[[activeChannels]]"
-      id                  = "restart-dialog">
+      on-xml-http-request   = "_sendXMLHttpRequest"
+      channels              = "[[activeChannels]]"
+      id                    = "restart-dialog">
     </restart-dialog>
     <iron-iconset-svg 
-      name                = "custom" 
-      size                = "24">
+      name                  = "custom" 
+      size                  = "24">
       <svg>
         <defs>
           <g id="outbox">
             <path 
-              fill        = "#ffffff" 
-              d           = "M14,14H10V11H8L12,7L16,11H14V14M16,11M5,15V5H19V15H15A3,3 0 0,1 12,18A3,3 0 0,1 9,15H5M19,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3" />
+              fill          = "#ffffff" 
+              d             = "M14,14H10V11H8L12,7L16,11H14V14M16,11M5,15V5H19V15H15A3,3 0 0,1 12,18A3,3 0 0,1 9,15H5M19,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5A2,2 0 0,0 19,3" />
           </g>
         </defs>
       </svg>
     </iron-iconset-svg>
     <error-dialog
-      opened              = "[[!online]]"
-      title               = "Network unavailable"
-      message             = "Please check your network connection.">
+      opened                = "[[!online]]"
+      title                 = "Network unavailable"
+      message               = "Please check your network connection.">
     </error-dialog>
     <error-dialog
-      opened              = "[[_boxUnavailable(hasInitialized, online, boxConnected)]]"
-      title               = "The Voxbox is not responding">
+      opened                = "[[_boxUnavailable(hasInitialized, online, boxConnected)]]"
+      title                 = "The Voxbox is not responding">
       <p class="nope">
         <img src="[[_nope(boxConnected)]]" style="max-height: 240px;" /> 
       </p>
       <p style="margin-bottom: 30px;">
-        Please follow the troubleshooting steps in your user manual. If the problem persists, contact the technical support team at Farm Radio for assistance.
+        Please follow the troubleshooting steps in your user manual. If the problem persists, contact the technical support at Farm Radio for assistance.
       </p>
     </error-dialog>
     <div class="spinner-container">
@@ -167,9 +167,10 @@
             <img src="/images/voxbox.png" style="margin-top: 6px;" />
             <span class="version">[[version]] client-0.3.5.4</span>
           </div>
-          <!--
-          <paper-icon-button icon="notification:power" on-tap="_showRestartDialog"></paper-icon-button>
-          -->
+          <paper-icon-button 
+            icon            = "notification:power" 
+            on-tap          = "_showRestartDialog">
+          </paper-icon-button>
         </app-toolbar>
         <paper-tabs selected="{{tab}}">
           <paper-tab>
@@ -183,9 +184,9 @@
               <iron-icon icon="communication:message"></iron-icon>
               <label>SMS Inbox
                 <paper-badge 
-                  for     = "number"
-                  hidden$ = "[[!unread]]"
-                  label   = "[[unread]]">
+                  for       = "number"
+                  hidden$   = "[[!unread]]"
+                  label     = "[[unread]]">
                 </paper-badge>
               </label>
             </div>
@@ -199,26 +200,27 @@
         </paper-tabs>
       </app-header>
       <iron-pages 
-        selected          = "[[tab]]">
+        selected            = "[[tab]]">
         <channel-list
-          diff            = "[[diff]]"
-          on-message      = "sendMessage"
-          channels        = "[[visibleChannels]]">
+          diff              = "[[diff]]"
+          on-message        = "sendMessage"
+          on-update-contact = "handleUpdateContact"
+          channels          = "[[channels]]">
         </channel-list>
         <message-inbox 
-          id              = "inbox"
-          on-message      = "sendMessage"
-          unread          = "{{unread}}"
-          messages        = "[[inbox]]"
-          channels        = "[[activeChannels]]"
-          debug           = "[[debug]]">
+          id                = "inbox"
+          on-message        = "sendMessage"
+          unread            = "{{unread}}"
+          messages          = "[[inbox]]"
+          channels          = "[[activeChannels]]"
+          debug             = "[[debug]]">
         </message-inbox>
         <message-outbox
-          id              = "outbox"
-          on-message      = "sendMessage"
-          messages        = "[[outbox]]"
-          channels        = "[[activeChannels]]"
-          debug           = "[[debug]]">
+          id                = "outbox"
+          on-message        = "sendMessage"
+          messages          = "[[outbox]]"
+          channels          = "[[activeChannels]]"
+          debug             = "[[debug]]">
         </message-outbox>
       </iron-pages>
     </app-header-layout>
@@ -245,16 +247,13 @@
           value: [],
         },
         channels: {
-          type: Object,
-          value: {},
-        },
-        visibleChannels: {
           type: Array,
-          computed: '_computedChannels(channels, channels.*)',
+          value: [],
         },
         activeChannels: {
           type: Array,
-          computed: '_activeChannels(visibleChannels, visibleChannels.*)',
+          computed: '_activeChannels(channels, channels.*)',
+          notify: true,
         },
         unread: {
           type: Number,
@@ -316,6 +315,16 @@
 
       send: function(event, data) {
         this.$['message-handler'].send({event: event, data: data});
+      },
+
+      handleUpdateContact: function(e) {
+        var change = e.detail;
+        if (change) {
+          var indices = this._getIndices();
+          if (indices.hasOwnProperty(change.channelId)) {
+            this.set('channels.' + indices[change.channelId] + '.contact.name', change.name);
+          }
+        }
       },
 
       handleConnectionOpened: function() {
@@ -400,7 +409,13 @@
               after_id: null,
               count: 1000,
             });
-            this.channels = payload.data.mixer.channels;
+            this.set('channels', []);
+            var channels = payload.data.mixer.channels;
+            Object.keys(channels).forEach(function(key) {
+              var channel = channels[key];
+              channel.id = key;
+              this.push('channels', channel);
+            }, this);
             this.diff = Date.now()-payload.data.server_time;
             this.version = payload.data.server_version || 'unknown version';
             if (this.debug) {
@@ -418,16 +433,40 @@
             Polymer.dom(document.querySelector('body')).appendChild(dialog);
             dialog.open();
             break;
-          case 'pong':
-            break;
           case 'channelUpdate':
+            var indices = this._getIndices();
             Object.keys(payload.data).forEach(function(key) {
-              var channel = payload.data[key];
-              this.set('channels.' + key, channel);
-              if ('ring' == channel.mode && 'incoming' == channel.direction && channel.contact) {
-                this._showDesktopNotification('Incoming call from ' + channel.contact.number);
-              } 
+              if (indices.hasOwnProperty(key)) {
+                var index = indices[key],
+                    channel = payload.data[key];
+                channel.id = key;
+                if ('ring' != this.channels[index].mode && 'ring' == channel.mode && 'incoming' == channel.direction && channel.contact) {
+                  this._showDesktopNotification('Incoming call from ' + channel.contact.number);
+                } 
+                this.set('channels.' + index, channel);
+              }
             }, this);
+            break;
+          case 'channelVolumeChange':
+            var indices = this._getIndices();
+            Object.keys(payload.data).forEach(function(key) {
+              if (indices.hasOwnProperty(key)) {
+                this.set('channels.' + indices[key] + '.level', payload.data[key]);
+              }
+            }, this);
+            break;
+          case 'channelContactInfo':
+            var indices = this._getIndices();
+            Object.keys(payload.data).forEach(function(key) {
+              if (indices.hasOwnProperty(key)) {
+                var change = payload.data[key];
+                Object.keys(change).forEach(function(prop) {
+                  this.set('channels.' + indices[key] + '.contact.' + prop, change[prop]);
+                }, this);
+              }
+            }, this);
+            break;
+          case 'pong':
             break;
           default:
             console.warn('Unhandled message type: ' + payload.event);
@@ -442,18 +481,18 @@
         this.$['message-handler'].send(e.detail);
       },
 
-      _computedChannels: function(channels) {
-        return Object.keys(channels).map(function(id) {
-          var channel = channels[id];
-          channel.id = id;
-          return channel;
-        });
-      },
-
       _activeChannels: function(channels) {
         return channels.filter(function(channel) {
           return 'free' === channel.mode;
         });
+      },
+
+      _getIndices: function() {
+        var indices = {};
+        for (var i = 0; i < this.channels.length; i++) {
+          indices[this.channels[i].id] = i;
+        }
+        return indices;
       },
 
       _tabChanged: function(tab) {
@@ -523,9 +562,14 @@
       },
 
       _sendXMLHttpRequest: function(e, params) {
+        var a = document.createElement('a');
+        a.href = window.__socket.url;
         var ajax = document.querySelector('iron-ajax');
-        ajax.url = 'http://192.168.1.6:19990/resetModems';
-        ajax.params = params;
+        ajax.url = 'http://' + a.hostname + ':19990/' + params.action;
+        //ajax.method = 'POST';
+        ajax.params = {
+          reason: params.reason,
+        }
         ajax.generateRequest();
         if (this.debug) {
           console.log('*** XML HTTP Request ***');
