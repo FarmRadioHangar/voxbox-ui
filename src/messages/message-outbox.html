@@ -11,7 +11,8 @@
 <dom-module id="message-outbox">
   <template>
     <style include="message-list-styles"></style>
-    <confirm-delete-dialog id                      = "confirm-delete-dialog" 
+    <confirm-delete-dialog 
+      id                      = "confirm-delete-dialog" 
       on-delete-confirmed     = "_handleDeleteSelection"
       selection-size          = "[[selectionSize]]">
     </confirm-delete-dialog>
@@ -79,11 +80,10 @@
       ],
 
       observers: [
-        '_updateIsEmpty(messages, messages.*)',
+        'updateIsEmpty(messages, messages.*)',
       ],
 
-      onScroll: function() {
-      },
+      onScroll: function() { },
 
       onTap: function(e) {
         if (this.hasSelection && ['checkboxContainer', 'icon'].indexOf(e.target.id) == -1) {
@@ -93,7 +93,7 @@
         }
       },
 
-      _updateIsEmpty: function(messages) {
+      updateIsEmpty: function(messages) {
         var nothing = !messages.length;
         if (this.isEmpty != nothing) {
           this.isEmpty = nothing;
